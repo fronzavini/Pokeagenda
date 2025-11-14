@@ -181,10 +181,10 @@ def listar_pokemons():
 # =====================================================
 
 # curl -X POST http://127.0.0.1:5000/associar_treinador_pokemon -H "Content-Type: application/json" -d "{\"treinador_id\":1,\"pokemon_id\":1,\"loca\":\"time\"}"
-@app.route('/associar_treinador_pokemon', methods=['POST'])
-def associar_treinador_pokemon():
+@app.route('/criar_treinador_pokemon', methods=['POST'])
+def criar_treinador_pokemon():
     dados = request.json
-    resultado = TreinadorPokemon.associar_treinador_pokemon(
+    resultado = TreinadorPokemon.criar_treinador_pokemon(
         treinador_id=dados.get("treinador_id"),
         pokemon_id=dados.get("pokemon_id"),
         loca=dados.get("loca")
@@ -193,9 +193,9 @@ def associar_treinador_pokemon():
 
 
 # curl -X DELETE http://127.0.0.1:5000/remover_treinador_pokemon/1
-@app.route('/remover_treinador_pokemon/<int:id>', methods=['DELETE'])
-def remover_treinador_pokemon(id):
-    resultado = TreinadorPokemon.deletar_associacao(id)
+@app.route('/deletar_treinador_pokemon/<int:id>', methods=['DELETE'])
+def deletar_treinador_pokemon(treinador_id, pokemon_id):
+    resultado = TreinadorPokemon.deletar_treinador_pokemon(treinador_id, pokemon_id)
     return jsonify({"message": resultado})
 
 
@@ -206,6 +206,10 @@ def listar_treinador_pokemon():
     return jsonify(associacoes)
 
 
+@app.route('/listar_pokemons_do_treinador/<int:treinador_id>', methods=['GET'])
+def listar_pokemons_do_treinador(treinador_id):
+    pokemons = TreinadorPokemon.listar_pokemons_do_treinador(treinador_id)
+    return jsonify(pokemons)
 # =====================================================
 # EXECUÇÃO DO APP
 # =====================================================
