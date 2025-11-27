@@ -246,6 +246,18 @@ class TreinadorPokemon:
                 cursor.execute(sql, (treinador_id,))
                 return cursor.fetchall()
 
+    # Dentro da classe TreinadorPokemon
+    def trocar_local(treinador_id, pokemon_id, novo_local):
+        """Atualiza o local de um Pokémon (de 'time' para 'box' ou vice-versa)."""
+        conexao = conectar()
+        with conexao:
+            with conexao.cursor() as cursor:
+                sql = """UPDATE Treinador_Pokemon
+                         SET loca=%s
+                         WHERE treinador_id=%s AND pokemon_id=%s"""
+                cursor.execute(sql, (novo_local, treinador_id, pokemon_id))
+            conexao.commit()
+
 
     def atualizar_treinador_pokemon(id, treinador_id, pokemon_id, loca):
         """Atualiza a relação entre um treinador e um Pokémon."""
