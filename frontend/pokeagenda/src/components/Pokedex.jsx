@@ -1,12 +1,27 @@
 import React, { useState } from "react";
 import styles from "../styles/Pokedex.module.css";
 import PokemonCard from "./PokemonCard";
+import TrainerCard from "./TrainerCard";
 
 export default function Pokedex() {
   const [showImage, setShowImage] = useState(false);
   const [lightsOn, setLightsOn] = useState(false);
   const [stripesOn, setStripesOn] = useState(false);
   const [showPokemonCard, setShowPokemonCard] = useState(false);
+  const [showTrainerCard, setShowTrainerCard] = useState(false);
+
+  const salvarTreinador = (dados) => {
+    console.log("Treinador salvo:", dados);
+  };
+
+  const treinador = {
+    id: 1,
+    nome: "Ash Ketchum",
+    email: "ash@pokemon.com",
+    cpf: "123.456.789-00",
+    foto: "https://i.imgur.com/7wQ9Z3F.png",
+    cidade: "Pallet Town",
+  };
 
   const handleCameraClick = () => {
     setShowImage((prev) => !prev);
@@ -127,12 +142,25 @@ export default function Pokedex() {
         </div>
 
         <div className={styles.bottomSlots}>
-          <button className={styles.slot}></button>
+          <button
+            className={styles.slot}
+            onClick={() => {
+              if (showImage) setShowTrainerCard(true);
+            }}
+          ></button>
+
           <button className={styles.slot}></button>
         </div>
       </div>
       {showPokemonCard && (
         <PokemonCard onClose={() => setShowPokemonCard(false)} />
+      )}
+      {showTrainerCard && (
+        <TrainerCard
+          treinador={treinador}
+          fechar={() => setShowTrainerCard(false)}
+          salvar={salvarTreinador}
+        />
       )}
     </div>
   );

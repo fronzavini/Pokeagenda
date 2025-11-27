@@ -1,0 +1,164 @@
+/* --------------------
+   PALETA POKÉMON
+-------------------- */
+/* Vermelho: #E3350D */
+/* Azul Escuro: #1E2A38 */
+/* Azul Médio: #243447 */
+/* Dourado: #FFD700 */
+/* Cinza Texto: #ECF0F1 */
+/* Cinza Fundo: rgba(0,0,0,0.85) */
+
+/* --------------------
+   0. OVERLAY (FUNDO ESCURO)
+-------------------- */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* ANIMAÇÃO */
+@keyframes popIn {
+  from {
+    transform: translateY(-40px) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* --------------------
+   1. CARD PRINCIPAL
+-------------------- */
+.card {
+  width: 92%;
+  max-width: 450px;
+  background: #1e2a38;
+  padding: 28px;
+  border-radius: 14px;
+
+  box-shadow: 0 0 20px rgba(227, 53, 13, 0.4), 0 12px 35px rgba(0, 0, 0, 0.5);
+
+  border: 2px solid #243447;
+  color: #ecf0f1;
+  font-family: "Segoe UI", sans-serif;
+
+  animation: popIn 0.35s ease-out;
+  position: relative;
+}
+
+/* --------------------
+   2. BOTÃO FECHAR
+-------------------- */
+.closeBtn {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  background: none;
+  border: none;
+  font-size: 26px;
+  color: #ecf0f1;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.closeBtn:hover {
+  color: #e3350d;
+  transform: scale(1.2);
+}
+
+/* --------------------
+   3. IMAGEM DO TREINADOR
+-------------------- */
+.photoBox {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  margin: 0 auto 20px auto;
+  overflow: hidden;
+  border: 4px solid #e3350d;
+  box-shadow: 0 0 15px rgba(227, 53, 13, 0.5);
+  background: #243447;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.photoBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photoPlaceholder {
+  color: #95a5a6;
+  font-size: 0.9em;
+}
+
+/* --------------------
+   4. CAMPOS DO FORMULÁRIO
+-------------------- */
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 0.9em;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #243447;
+  color: #ecf0f1;
+  font-size: 1em;
+  transition: 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(227, 53, 13, 0.5);
+}
+
+/* --------------------
+   5. BOTÃO SALVAR
+-------------------- */
+.saveBtn {
+  width: 100%;
+  margin-top: 25px;
+  padding: 14px 0;
+  background: #e3350d;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 0 15px rgba(227, 53, 13, 0.4);
+}
+
+.saveBtn:hover {
+  background: #c0290c;
+  transform: translateY(-2px);
+}
+
+.saveBtn:active {
+  transform: translateY(0);
+}
