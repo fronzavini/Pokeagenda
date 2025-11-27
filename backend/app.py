@@ -191,6 +191,21 @@ def criar_treinador_pokemon():
     )
     return jsonify({"message": resultado})
 
+# Rota para trocar o local do Pokémon
+@app.route('/trocar_local', methods=['PUT'])
+def trocar_local():
+    dados = request.json
+    treinador_id = dados.get("treinador_id")
+    pokemon_id = dados.get("pokemon_id")
+    novo_local = dados.get("novo_local")  # Exemplo: 'time' ou 'box'
+
+    if not treinador_id or not pokemon_id or not novo_local:
+        return jsonify({"message": "Parâmetros inválidos, todos os campos são obrigatórios."}), 400
+
+    resultado = TreinadorPokemon.trocar_local(treinador_id, pokemon_id, novo_local)
+
+    return jsonify({"message": f"O local do Pokémon {pokemon_id} do treinador {treinador_id} foi alterado para {novo_local}."})
+
 
 # curl -X DELETE http://127.0.0.1:5000/remover_treinador_pokemon/1
 @app.route('/deletar_treinador_pokemon/<int:id>', methods=['DELETE'])
