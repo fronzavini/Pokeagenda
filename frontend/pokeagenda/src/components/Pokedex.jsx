@@ -16,12 +16,21 @@ export default function Pokedex() {
         </div>
 
         <div className={styles.mainScreen}>
-          <div className={styles.screenInner}></div>
+          <div className={styles.screenInner}>
+            <img
+              src="https://m.media-amazon.com/images/I/41Jw-Dom9zL._AC_SY350_.jpg"
+              alt="Treinador"
+              className={styles.screenImage}
+            />
+          </div>
         </div>
 
-        <div className={styles.controlRow}>
+        <div className={styles.listaWrapped}>
           <button className={styles.listra}></button>
           <button className={styles.listra}></button>
+        </div>
+
+        <div className={styles.controlGrid}>
           <button className={styles.smallBtn}></button>
           <button className={styles.rectBtn}></button>
           <button className={styles.dpad}>+</button>
@@ -31,7 +40,7 @@ export default function Pokedex() {
       <div className={styles.hinge}></div>
 
       <div className={styles.rightPanel}>
-        <button className={styles.topDisplay}></button>
+        <div className={styles.topDisplay}></div>
 
         <div className={styles.keyGrid}>
           {Array.from({ length: 6 }).map((_, i) => (
