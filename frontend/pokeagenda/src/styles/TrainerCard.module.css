@@ -1,164 +1,245 @@
-/* --------------------
-   PALETA POKÉMON
--------------------- */
-/* Vermelho: #E3350D */
-/* Azul Escuro: #1E2A38 */
-/* Azul Médio: #243447 */
-/* Dourado: #FFD700 */
-/* Cinza Texto: #ECF0F1 */
-/* Cinza Fundo: rgba(0,0,0,0.85) */
+/* 1. IMPORTAÇÃO DA GOOGLE FONT PIXELIZADA */
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
-/* --------------------
-   0. OVERLAY (FUNDO ESCURO)
--------------------- */
+/* ========================================================= */
+/* BASE E OVERLAY */
+/* ========================================================= */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.85);
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
-  padding: 20px;
-  overflow-y: auto;
+  z-index: 1000;
 }
 
-/* ANIMAÇÃO */
-@keyframes popIn {
-  from {
-    transform: translateY(-40px) scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-}
-
-/* --------------------
-   1. CARD PRINCIPAL
--------------------- */
 .card {
-  width: 92%;
-  max-width: 450px;
-  background: #1e2a38;
-  padding: 28px;
-  border-radius: 14px;
-
-  box-shadow: 0 0 20px rgba(227, 53, 13, 0.4), 0 12px 35px rgba(0, 0, 0, 0.5);
-
-  border: 2px solid #243447;
-  color: #ecf0f1;
-  font-family: "Segoe UI", sans-serif;
-
-  animation: popIn 0.35s ease-out;
-  position: relative;
-}
-
-/* --------------------
-   2. BOTÃO FECHAR
--------------------- */
-.closeBtn {
-  position: absolute;
-  right: 15px;
-  top: 15px;
-  background: none;
-  border: none;
-  font-size: 26px;
-  color: #ecf0f1;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.closeBtn:hover {
-  color: #e3350d;
-  transform: scale(1.2);
-}
-
-/* --------------------
-   3. IMAGEM DO TREINADOR
--------------------- */
-.photoBox {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  margin: 0 auto 20px auto;
-  overflow: hidden;
-  border: 4px solid #e3350d;
-  box-shadow: 0 0 15px rgba(227, 53, 13, 0.5);
-  background: #243447;
+  width: 600px;
+  min-height: 500px;
+  background-color: #e6e6e6;
+  border: 4px solid #555;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  padding: 15px;
+  font-family: Arial, sans-serif;
+  color: #333;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 100;
+}
+
+/* ========================================================= */
+/* CABEÇALHO (LOGO E TÍTULO) */
+/* ========================================================= */
+.header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
 }
 
-.photoBox img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* Logo Pokémon como Imagem */
+.pokemonLogo {
+  /* POSICIONAMENTO LIVRE E POR CIMA */
+  position: absolute;
+  top: 70px; /* Distância do topo do overlay */
+  left: 370px; /* Distância da esquerda do overlay */
+  transform: none; /* Remove a centralização (translateX) */
+  width: 350px; /* Mantém o tamanho da imagem */
+  height: auto;
+  z-index: 200; /* Garante que fique por cima do card */
+  filter: drop-shadow(4px 4px 5px rgba(0, 0, 0, 0.5));
 }
 
-.photoPlaceholder {
-  color: #95a5a6;
-  font-size: 0.9em;
+/* ========================================================= */
+/* CONTEÚDO PRINCIPAL (COLUNAS E TÍTULOS) */
+/* ========================================================= */
+.formContent {
+  display: flex;
+  gap: 15px;
+  flex-grow: 1;
 }
 
-/* --------------------
-   4. CAMPOS DO FORMULÁRIO
--------------------- */
-.field {
-  margin-bottom: 16px;
+.trainerDesignColumn,
+.infoColumn {
+  flex: 1;
+  border: 4px solid #777; /* Borda grossa */
+  background-color: #f8f8f8;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px; /* Borda da coluna arredondada */
+  overflow: hidden;
+  margin: 0;
 }
 
-.field label {
-  display: block;
-  font-size: 0.9em;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
-  background: #243447;
-  color: #ecf0f1;
-  font-size: 1em;
-  transition: 0.2s;
-}
-
-.input:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(227, 53, 13, 0.5);
-}
-
-/* --------------------
-   5. BOTÃO SALVAR
--------------------- */
-.saveBtn {
-  width: 100%;
-  margin-top: 25px;
-  padding: 14px 0;
-  background: #e3350d;
-  border: none;
-  border-radius: 10px;
+/* Título da seção (Bloco Verde Centralizado) */
+.sectionTitle {
+  text-align: center;
+  background-color: #7a9c80; /* Cor do bloco de título */
+  color: white;
+  /* AQUI: Aplicação da Press Start 2P no título da seção */
+  font-family: "Press Start 2P", monospace;
   font-weight: bold;
-  font-size: 1.1em;
-  color: #fff;
+  font-size: 16px;
+
+  /* Borda e Arredondamento do PRÓPRIO TÍTULO */
+  border: 2px solid #5d7a61;
+  border-radius: 8px;
+
+  padding: 8px 15px;
+
+  /* Centraliza o título e cria o respiro lateral/superior */
+  margin: -5px auto 10px auto;
+  width: calc(100% - 30px);
+  max-width: 250px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================================= */
+/* COLUNA DESIGN (FOTO) */
+/* ========================================================= */
+.designContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.photoLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.preview {
+  width: 90%;
+  /* Define a largura máxima absoluta da imagem */
+  max-width: 280px;
+  /* Define a altura máxima para evitar que imagens longas estiquem a coluna */
+  max-height: 295px; /* 🟢 NOVO: Altura máxima ajustada */
+
+  height: auto; /* Garante que a altura se ajuste para manter a proporção */
+
+  /* 🟢 IMPORTANTE: Controla como a imagem preenche o espaço */
+  object-fit: contain; /* Garante que a imagem inteira seja visível, sem ser cortada */
+
+  display: block;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+/* Input de URL da foto - alinhamento à esquerda */
+.trainerDesignColumn .inputField {
+  text-align: left;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+/* ========================================================= */
+/* COLUNA INFO (CAMPOS DE EDIÇÃO - VERTICAL) */
+/* ========================================================= */
+.infoContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.infoRow {
+  /* Layout vertical: label em cima, input embaixo */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 5px 0;
+  border-bottom: none; /* Linha pontilhada removida */
+  font-size: 14px;
+  min-height: auto;
+}
+
+.label {
+  font-weight: bold;
+  color: #555;
+  white-space: nowrap;
+  margin-right: 0;
+  margin-bottom: 2px; /* Espaço entre label e input */
+  flex-basis: auto;
+  /* Fonte pixelizada no rótulo */
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px; /* Tamanho ajustado para a fonte Press Start 2P */
+}
+
+.inputField {
+  flex-grow: 1;
+  /* Recuo: 95% da largura total, deixando 5% de espaço à direita */
+  width: 95%;
+  align-self: flex-start;
+
+  padding: 3px 5px;
+  border: none;
+  border-bottom: 1px solid #777; /* Linha discreta para o input */
+
+  background-color: transparent;
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+  font-family: inherit;
+}
+
+/* Efeito de foco para mostrar que o campo é editável */
+.inputField:focus {
+  outline: none;
+  border-bottom: 1px solid #3b4cca;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+/* ========================================================= */
+/* BOTÕES */
+/* ========================================================= */
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 13px;
+  margin-left: 380px;
+}
+
+.buttons button {
+  padding: 8px 15px;
+  border: 2px solid #555;
+  border-radius: 8px; /* Arredondamento para os botões */
+  font-weight: bold;
   cursor: pointer;
-  transition: 0.2s;
-  box-shadow: 0 0 15px rgba(227, 53, 13, 0.4);
+  font-size: 16px;
+  transition: all 0.2s ease;
+  min-width: 100px;
 }
 
-.saveBtn:hover {
-  background: #c0290c;
-  transform: translateY(-2px);
+.cancel {
+  background-color: #ddd;
+  color: #555;
 }
 
-.saveBtn:active {
-  transform: translateY(0);
+.cancel:hover {
+  background-color: #ccc;
+  border-color: #333;
+}
+
+.save {
+  background-color: #4caf50; /* Verde */
+  color: white;
+  border-color: #337a36;
+}
+
+.save:hover {
+  background-color: #45a049;
+  border-color: #2b612e;
 }
