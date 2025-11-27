@@ -81,7 +81,10 @@ export default function Pokedex() {
           ></button>
           <button
             className={styles.dpad}
-            onClick={() => setShowPokemonCard((prev) => !prev)}
+            onClick={() => {
+              if (showImage) setShowPokemonCard((prev) => !prev);
+            }}
+            disabled={!showImage} // opcional para desabilitar visualmente
           >
             +
           </button>
