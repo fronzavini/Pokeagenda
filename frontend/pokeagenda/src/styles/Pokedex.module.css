@@ -1,0 +1,218 @@
+.wrapper {
+  display: flex;
+  gap: 0;
+  padding: 0;
+}
+
+.leftPanel,
+.rightPanel {
+  background: #d90000;
+  border: 4px solid #8f0000;
+  border-radius: 10px;
+  width: 280px;
+  height: 360px;
+  padding: 16px;
+  box-sizing: border-box;
+  box-shadow: inset -6px -6px 0 rgba(0, 0, 0, 0.12);
+}
+
+.hinge {
+  width: 26px;
+  background: linear-gradient(#b20000, #8a0000);
+  border: 4px solid #6b0000;
+  height: 360px;
+}
+
+button {
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.camera {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 25%, #9fd9ff, #2c88c1 60%, #073b56);
+  border: 4px solid #133c58;
+}
+
+.lights {
+  display: flex;
+  gap: 6px;
+}
+
+.light {
+  width: 12px;
+  height: 12px;
+  background: #ffdd57;
+  border-radius: 50%;
+  box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.35),
+    /* sombra interna escura */ inset 2px 2px 4px rgba(255, 255, 255, 0.45),
+    /* luz interna */ 0 1px 2px rgba(0, 0, 0, 0.4); /* sombra externa leve */
+}
+
+.mainScreen {
+  width: 100%;
+  height: 150px;
+  background: #e9e9e9;
+  border: 3px solid #9b9b9b;
+  box-sizing: border-box;
+
+  /* Só o canto inferior esquerdo chanfrado */
+  clip-path: polygon(
+    0 0,
+    /* topo esquerdo normal */ 100% 0,
+    /* topo direito normal */ 100% 100%,
+    /* canto inferior direito normal */ 15% 100%,
+    /* borda inferior até perto da esquerda */ 0 85%
+      /* chanfro no canto inferior esquerdo */
+  );
+
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.screenInner {
+  width: 86%;
+  height: 78%;
+  background: #111;
+  border-radius: 4px;
+}
+
+.controlRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* D-pad como botão */
+.dpad {
+  font-size: 5rem;
+  color: #121212;
+  border-radius: 6px;
+  position: relative;
+  background-color: transparent;
+}
+
+.smallBtn {
+  width: 20px;
+  height: 20px;
+  background: #003b2f;
+  border-radius: 50%;
+}
+
+.rectBtn {
+  width: 60px;
+  height: 28px;
+  background: #5fcf7f;
+  border-radius: 4px;
+}
+
+/* Right panel buttons */
+.topDisplay {
+  width: 100%;
+  height: 60px;
+  background: #121212;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.keyGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.keyCell {
+  height: 36px;
+  background: #4bb0ff;
+  border-radius: 4px;
+  box-shadow: inset -3px -3px 0 rgba(0, 0, 0, 0.15);
+}
+
+.secondaryControls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.slider {
+  width: 70%;
+  height: 34px;
+  background: #e6e6e6;
+  border-radius: 4px;
+}
+
+.greenBtn {
+  width: 40px;
+  height: 40px;
+  background: goldenrod;
+  border-radius: 50%;
+}
+
+.bottomSlots {
+  display: flex;
+  gap: 12px;
+}
+
+.slot {
+  flex: 1;
+  height: 34px;
+  background: #002f24;
+  border-radius: 6px;
+}
+
+button:active {
+  transform: scale(0.96);
+  filter: brightness(0.85);
+}
+
+.lights .light:nth-child(1) {
+  background: #ff3b30; /* vermelho */
+}
+
+.lights .light:nth-child(2) {
+  background: #ffcc00; /* amarelo */
+}
+
+.lights .light:nth-child(3) {
+  background: #4cd964; /* verde */
+}
+
+.listra {
+  width: 55px;
+  height: 10px;
+  border-radius: 20px;
+  border: 2px solid #3a0000;
+  background: radial-gradient(circle at 50% 60%, #ff5c5c 20%, #c30000 70%);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.3),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.3);
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+/* 🔴 PRIMEIRA listra = vermelha */
+.listra:nth-child(1) {
+  border-color: #3a0000;
+  background: radial-gradient(circle at 50% 60%, #ff5c5c 20%, #c30000 70%);
+}
+
+/* 🔵 SEGUNDA listra = azul */
+.listra:nth-child(2) {
+  border-color: #003047;
+  background: radial-gradient(circle at 50% 60%, #5cd4ff 20%, #0077a8 70%);
+}
