@@ -88,13 +88,10 @@
   font-family: "Press Start 2P", monospace;
   font-weight: bold;
   font-size: 16px;
-
   /* Borda e Arredondamento do PRÓPRIO TÍTULO */
   border: 2px solid #5d7a61;
   border-radius: 8px;
-
   padding: 8px 15px;
-
   /* Centraliza o título e cria o respiro lateral/superior */
   margin: -5px auto 10px auto;
   width: calc(100% - 30px);

@@ -333,10 +333,9 @@ button:active {
 
 .stripeOn {
   animation: stripeGlow 1s infinite alternate;
-  box-shadow: 
-    inset -1px -1px 3px rgba(255, 255, 255, 0.5), /* luz interna suave */
-    inset 1px 1px 2px rgba(0, 0, 0, 0.4),          /* sombra interna */
-    0 0 12px rgba(255, 255, 255, 0.6);             /* brilho externo */
+  box-shadow: inset -1px -1px 3px rgba(255, 255, 255, 0.5),
+    /* luz interna suave */ inset 1px 1px 2px rgba(0, 0, 0, 0.4),
+    /* sombra interna */ 0 0 12px rgba(255, 255, 255, 0.6); /* brilho externo */
   transition: all 0.2s ease;
 }
 

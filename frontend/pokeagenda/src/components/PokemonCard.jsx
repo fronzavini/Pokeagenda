@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styles from "../styles/PokemonCard.module.css";
 
-// Adicionando o 'popupWrapper' de volta
+// NÃO ALTEREI LÓGICA, HOOKS, FUNÇÕES OU FETCHES — só reorganizei o JSX/estrutura e classes para seguir o estilo do TrainerCard.
+
 export default function PokemonCard({ onClose }) {
   const [listaNomes, setListaNomes] = useState([]);
   const [nome, setNome] = useState("");
@@ -32,9 +33,6 @@ export default function PokemonCard({ onClose }) {
       }));
     }
   }, []);
-
-  // ... (Restante da lógica de useEffect, buscarPokemon, handleNomeChange, etc. permanece inalterada)
-  // ... (O código aqui é o mesmo do meu último bloco de resposta)
 
   useEffect(() => {
     const fetchList = async () => {
@@ -156,107 +154,139 @@ export default function PokemonCard({ onClose }) {
   };
 
   return (
-    // 💥 NOVO WRAPPER POPUP 💥
-    <div className={styles.popupWrapper} onClick={onClose}>
-      {/* O evento de clique é barrado para que feche apenas no wrapper, não no card */}
+    <div className={styles.overlay} onClick={onClose}>
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/640px-International_Pok%C3%A9mon_logo.svg.png"
+        alt="Pokémon Logo"
+        className={styles.pokemonLogo}
+      />
       <div className={styles.card} onClick={(e) => e.stopPropagation()}>
-        {/* ❌ BOTÃO DE FECHAR */}
-        {onClose && (
-          <button className={styles.closeBtn} onClick={onClose}>
-            ×
-          </button>
-        )}
-
-        {/* Imagem */}
-        <div className={`${styles.imgBox} ${shiny ? styles.holograma : ""}`}>
-          {pokemon.imagem ? (
-            <img src={pokemon.imagem} alt="pokemon" />
-          ) : (
-            <span className={styles.placeholder}>Escolha um Pokémon</span>
-          )}
+        {/* Header: close + buttons (mesmo posicionamento do TrainerCard) */}
+        <div className={styles.header}>
+          <div /> {/* espaço para equilibrar o header como no outro card */}
+          <div className={styles.buttons}>
+            {onClose && (
+              <button className={styles.cancel} onClick={onClose}>
+                Fechar
+              </button>
+            )}
+            <button
+              type="button"
+              className={styles.save}
+              onClick={handleSave}
+              disabled={!pokemonFullData}
+            >
+              Salvar
+            </button>
+          </div>
         </div>
 
-        {/* Autocomplete */}
-        <div className={styles.fieldWrapper}>
-          <label>Nome </label>
-          <input
-            type="text"
-            value={nome}
-            onChange={handleNomeChange}
-            onBlur={() => setTimeout(() => setSugestoes([]), 200)}
-            placeholder="Ex: charizard "
-            className={styles.input}
-          />
+        {/* Conteúdo em 2 colunas: esquerda = imagem, direita = inputs + infos */}
+        <div className={styles.formContent}>
+          {/* Coluna esquerda: imagem do Pokémon */}
+          <div className={styles.trainerDesignColumn}>
+            <h3 className={styles.sectionTitle}>Pokémon</h3>
 
-          {sugestoes.length > 0 && (
-            <ul className={styles.sugestoes}>
-              {sugestoes.map((n) => (
-                <li key={n} onClick={() => selecionarNome(n)}>
-                  {n}
-                </li>
-              ))}
-            </ul>
-          )}
+            <div className={styles.designContent}>
+              <div
+                className={`${styles.imgBox} ${shiny ? styles.holograma : ""}`}
+              >
+                <img src={pokemon.imagem || ""} />
+              </div>
+            </div>
+          </div>
+
+          {/* Coluna direita: inputs e informações */}
+          <div className={styles.infoColumn}>
+            <h3 className={styles.sectionTitle}>Info</h3>
+
+            <div className={styles.infoContent}>
+              {/* Nome (autocomplete) */}
+              <div className={styles.infoRow}>
+                <span className={styles.label}>Nome:</span>
+                <input
+                  type="text"
+                  value={nome}
+                  onChange={handleNomeChange}
+                  onBlur={() => setTimeout(() => setSugestoes([]), 200)}
+                  placeholder="Ex: charizard"
+                  className={styles.inputField}
+                />
+
+                {sugestoes.length > 0 && (
+                  <ul className={styles.sugestoes}>
+                    {sugestoes.map((n) => (
+                      <li
+                        key={n}
+                        onClick={() => selecionarNome(n)}
+                        className={styles.sugestaoItem}
+                      >
+                        {n}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              {/* Apelido */}
+              <label className={styles.infoRow}>
+                <span className={styles.label}>Apelido (Opcional):</span>
+                <input
+                  type="text"
+                  value={apelido}
+                  onChange={(e) => setApelido(e.target.value)}
+                  placeholder={`Ex: O Fogo de ${nome || "..."}`}
+                  className={styles.inputField}
+                />
+              </label>
+
+              {/* Shiny toggle */}
+              <label className={styles.infoRow}>
+                <span className={styles.label}>Shiny:</span>
+                <div className={styles.shinyRow}>
+                  <input
+                    type="checkbox"
+                    checked={shiny}
+                    onChange={handleShinyToggle}
+                    id="shinyToggle"
+                  />
+                </div>
+              </label>
+
+              {/* Localização */}
+              <label className={styles.infoRow}>
+                <span className={styles.label}>Localização:</span>
+                <select
+                  value={localizacao}
+                  onChange={(e) => setLocalizacao(e.target.value)}
+                  className={styles.inputField}
+                >
+                  <option value="Time">Time</option>
+                  <option value="Box">Box</option>
+                </select>
+              </label>
+
+              {/* Informações do Pokémon */}
+              <div className={styles.info}>
+                <p>
+                  <strong>Nº Pokédex:</strong> {pokemon.numero}
+                </p>
+                <p>
+                  <strong>Tipo:</strong> {pokemon.tipo}
+                </p>
+                <p>
+                  <strong>Altura:</strong> {pokemon.altura}
+                </p>
+                <p>
+                  <strong>Peso:</strong> {pokemon.peso}
+                </p>
+                <p>
+                  <strong>Habilidade:</strong> {pokemon.habilidade}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-
-        {/* Campo Apelido */}
-        <div className={styles.fieldWrapper}>
-          <label>Apelido (Opcional)</label>
-          <input
-            type="text"
-            value={apelido}
-            onChange={(e) => setApelido(e.target.value)}
-            placeholder={`Ex: O Fogo de ${nome || "..."}`}
-            className={styles.input}
-          />
-        </div>
-
-        {/* Checkbox Shiny */}
-        <label className={styles.shinyToggleLabel}>
-          <input type="checkbox" checked={shiny} onChange={handleShinyToggle} />
-          <span>{shiny ? "🌟 Shiny Ativo" : "Normal"}</span>
-        </label>
-
-        {/* Seletor Time/Box */}
-        <div className={styles.fieldWrapper}>
-          <label>Localização</label>
-          <select
-            value={localizacao}
-            onChange={(e) => setLocalizacao(e.target.value)}
-            className={styles.select}
-          >
-            <option value="Time">Time</option>
-            <option value="Box">Box</option>
-          </select>
-        </div>
-
-        {/* Infos */}
-        <div className={styles.info}>
-          <p>
-            <strong>Nº Pokédex:</strong> {pokemon.numero}
-          </p>
-          <p>
-            <strong>Tipo:</strong> {pokemon.tipo}
-          </p>
-          <p>
-            <strong>Altura:</strong> {pokemon.altura}
-          </p>
-          <p>
-            <strong>Peso:</strong> {pokemon.peso}
-          </p>
-          <p>
-            <strong>Habilidade:</strong> {pokemon.habilidade}
-          </p>
-        </div>
-
-        {/* Botão Salvar */}
-        <button
-          className={styles.saveBtn}
-          onClick={handleSave}
-          disabled={!pokemonFullData}
-        >
-          Salvar Pokémon
-        </button>
       </div>
     </div>
   );
