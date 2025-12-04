@@ -4,8 +4,9 @@ import Botao from "./components/Botao";
 import Tutorial from "./components/Tutorial";
 import "./App.css";
 
+
 function App() {
-  const nome = "Manuela";
+ 
   const [tutorialActive, setTutorialActive] = useState(false);
 
   const steps = [
@@ -72,8 +73,9 @@ function App() {
       <div className="left-button" data-tutorial="tutorial-btn">
         <Botao onClick={() => setTutorialActive((s) => !s)} />
       </div>
-      <h1 className="titulo">Bem-vindo à Pokédex, {nome}!</h1>
-
+      <div className="app">
+        <h1 className="titulo">Bem-vindo à Pokédex!</h1>
+      </div>
       <Pokedex />
 
       <Tutorial
