@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styles from "../styles/PokemonCard.module.css";
 
-export default function PokemonCard({ onClose, treinadorId, onSave }) {
+export default function PokemonCard({ onClose, treinadorId, onSave, time }) {
   const [listaNomes, setListaNomes] = useState([]);
   const [nome, setNome] = useState("");
   const [sugestoes, setSugestoes] = useState([]);
@@ -22,7 +22,6 @@ export default function PokemonCard({ onClose, treinadorId, onSave }) {
 
   const [pokemonFullData, setPokemonFullData] = useState(null);
 
-  // Habilidade selecionada
   const [habilidade, setHabilidade] = useState("");
   const [habilidadesDisponiveis, setHabilidadesDisponiveis] = useState([]);
 
@@ -88,13 +87,11 @@ export default function PokemonCard({ onClose, treinadorId, onSave }) {
       const data = await res.json();
       setPokemonFullData(data);
 
-      // Habilidades reais do Pokémon
       const abilities = data.abilities.map((a) => a.ability.name);
       setHabilidadesDisponiveis(abilities);
       const primeiraHab = abilities[0] || "";
       setHabilidade(primeiraHab);
 
-      // Dados principais do Pokémon
       setPokemon({
         imagem: "",
         numero: data.id,
@@ -106,7 +103,6 @@ export default function PokemonCard({ onClose, treinadorId, onSave }) {
 
       setSugestoes([]);
     } catch (err) {
-      console.error("Erro ao buscar Pokémon:", err);
       setPokemon({
         imagem: "",
         numero: "",
@@ -160,13 +156,19 @@ export default function PokemonCard({ onClose, treinadorId, onSave }) {
       return;
     }
 
+    // Limitar time a no máximo 6 pokémons
+    if (localizacao === "time" && time && time.length >= 6) {
+      alert("Seu time já tem 6 Pokémon! Libere espaço ou escolha Box.");
+      return;
+    }
+
     const payload = {
       shiny,
       apelido: apelido || nome,
       numero_pokedex: pokemon.numero,
       sombroso,
       id_treinador: treinadorId,
-      loca: localizacao, // deve ser "time" ou "box" minúsculo!
+      loca: localizacao,
       habilidade
     };
 
@@ -179,15 +181,10 @@ export default function PokemonCard({ onClose, treinadorId, onSave }) {
 
       const json = await res.json();
 
-      if (json && json.message) {
-        alert(json.message);
-      } else {
-        alert("Pokémon salvo com sucesso!");
-      }
-      if (onSave) onSave(); // Atualiza lista após salvar
+      alert(json.message || "Pokémon salvo com sucesso!");
+      if (onSave) onSave();
       if (onClose) onClose();
     } catch (err) {
-      console.error("Erro ao salvar Pokémon:", err);
       alert("Erro ao salvar Pokémon.");
     }
   };

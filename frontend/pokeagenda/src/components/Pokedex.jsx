@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "../styles/Pokedex.module.css";
 import PokemonCard from "./PokemonCard";
 import TrainerCard from "./TrainerCard";
+import PokemonInfoModal from "./PokemonInfoModal"; // Novo componente para detalhes
 
 export default function Pokedex() {
   const [showImage, setShowImage] = useState(false);
@@ -14,12 +15,12 @@ export default function Pokedex() {
   const [treinador, setTreinador] = useState(null);
   const [treinadores, setTreinadores] = useState([]);
   const [selectedTreinadorId, setSelectedTreinadorId] = useState(null);
-  const [trainerModalMode, setTrainerModalMode] = useState("edit"); // "edit" ou "create"
+  const [trainerModalMode, setTrainerModalMode] = useState("edit");
 
   const [time, setTime] = useState([]);
   const [box, setBox] = useState([]);
+  const [selectedPokemon, setSelectedPokemon] = useState(null); // para mostrar modal de detalhes
 
-  // Busca todos os treinadores
   const carregarTreinadores = async () => {
     try {
       const res = await fetch("http://localhost:5000/listar_treinadores");
@@ -33,26 +34,19 @@ export default function Pokedex() {
     }
   };
 
-  // Busca treinador e seus pokémons
   const carregarDados = async (forcaId = null) => {
     try {
       const usedId = forcaId || selectedTreinadorId;
       if (!usedId) return;
-      // Treinador
       const resT = await fetch(`http://localhost:5000/treinador/${usedId}`);
       const trainerData = await resT.json();
       setTreinador(trainerData && trainerData.id ? trainerData : null);
 
-      // Pokémons por treinador
       const resP = await fetch(`http://localhost:5000/listar_pokemons_por_treinador/${usedId}`);
       const lista = await resP.json();
       const arrayPokemons = Array.isArray(lista) ? lista : [];
-      const timeList = arrayPokemons.filter((p) =>
-        ((p.loca || p.local) || "").toLowerCase() === "time"
-      );
-      const boxList = arrayPokemons.filter((p) =>
-        ((p.loca || p.local) || "").toLowerCase() === "box"
-      );
+      const timeList = arrayPokemons.filter((p) => ((p.loca || p.local) || "").toLowerCase() === "time");
+      const boxList = arrayPokemons.filter((p) => ((p.loca || p.local) || "").toLowerCase() === "box");
       setTime(timeList);
       setBox(boxList);
     } catch (err) {
@@ -62,7 +56,6 @@ export default function Pokedex() {
     }
   };
 
-  // Inicializa lista de treinadores, e carrega time/box do ativo
   useEffect(() => {
     carregarTreinadores();
   }, []);
@@ -73,7 +66,6 @@ export default function Pokedex() {
     }
   }, [selectedTreinadorId]);
 
-  // Salvar/editar treinador existente
   const salvarTreinador = (dados) => {
     fetch(`http://localhost:5000/editar_treinador/${dados.id}`, {
       method: "PUT",
@@ -87,7 +79,6 @@ export default function Pokedex() {
       });
   };
 
-  // Cadastrar novo treinador
   const cadastrarNovoTreinador = (dados) => {
     fetch(`http://localhost:5000/criar_treinador`, {
       method: "POST",
@@ -97,7 +88,6 @@ export default function Pokedex() {
       .then((res) => res.json())
       .then(() =>
         carregarTreinadores().then(() => {
-          // Seleciona o último treinador cadastrado
           setTimeout(() => {
             if (treinadores.length > 0) {
               setSelectedTreinadorId(
@@ -120,6 +110,14 @@ export default function Pokedex() {
     if (showImage) setLightsOn((prev) => !prev);
   };
 
+  const liberarPokemon = async (pokeId) => {
+    if (window.confirm("Tem certeza que deseja liberar este Pokémon? Isso não poderá ser desfeito.")) {
+      await fetch(`http://localhost:5000/deletar_pokemon/${pokeId}`, { method: "DELETE" });
+      setSelectedPokemon(null);
+      carregarDados();
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <div
@@ -136,6 +134,7 @@ export default function Pokedex() {
           display: "flex",
           alignItems: "center"
         }}
+        data-tutorial="trainer-select"
       >
         Treinador:&nbsp;
         <select
@@ -180,8 +179,9 @@ export default function Pokedex() {
           <button
             className={`${styles.camera} ${showImage ? styles.cameraActive : ""}`}
             onClick={handleCameraClick}
+            data-tutorial="camera"
           />
-          <div className={styles.lights}>
+          <div className={styles.lights} data-tutorial="lights">
             <span className={`${styles.light} ${lightsOn ? styles.lightOn : ""}`} />
             <span className={`${styles.light} ${lightsOn ? styles.lightOn : ""}`} />
             <span className={`${styles.light} ${lightsOn ? styles.lightOn : ""}`} />
@@ -192,12 +192,10 @@ export default function Pokedex() {
             <span className={styles.ledTiny}></span>
             <span className={styles.ledTiny}></span>
           </div>
-
           <div className={styles.frameVents}>
             <span></span><span></span><span></span>
           </div>
-
-          <div className={styles.screenInner}>
+          <div className={styles.screenInner} data-tutorial="screen">
             {showImage && treinador?.foto && (
               <img src={treinador.foto} className={styles.screenImage} alt="foto treinador"/>
             )}
@@ -206,23 +204,24 @@ export default function Pokedex() {
           </div>
         </div>
         <div className={styles.listaWrapped}>
-          <button className={`${styles.listra} ${stripesOn ? styles.stripeOn : ""}`} />
+          <button className={`${styles.listra} ${stripesOn ? styles.stripeOn : ""}`} data-tutorial="rect-btn" />
           <button className={`${styles.listra} ${stripesOn ? styles.stripeOn : ""}`} />
         </div>
-
         <div className={styles.controlGrid}>
-          <button className={styles.smallBtn} onClick={handleSmallBtnClick} />
+          <button className={styles.smallBtn} onClick={handleSmallBtnClick} data-tutorial="small-btn" />
           <button
             className={styles.rectBtn}
             onClick={() => {
               setTrainerModalMode("edit");
               setShowTrainerCard(true);
             }}
+            data-tutorial="edit-trainer-btn"
           />
           <button
             className={styles.dpad}
             onClick={() => showImage && setShowPokemonCard(true)}
             disabled={!showImage}
+            data-tutorial="dpad"
           >
             +
           </button>
@@ -235,11 +234,16 @@ export default function Pokedex() {
             TIME
           </span>
         </div>
-        <div className={styles.keyGrid}>
+        <div className={styles.keyGrid} data-tutorial="key-grid">
           {Array.from({ length: 6 }).map((_, i) => {
             const p = showImage ? time[i] : null;
             return (
-              <div key={i} className={styles.pokeCell}>
+              <div
+                key={i}
+                className={styles.pokeCell}
+                onClick={() => p && setSelectedPokemon(p)}
+                style={{ cursor: p ? "pointer" : "default" }}
+              >
                 {p && p.numero_pokedex && (
                   <img
                     src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.numero_pokedex}.png`}
@@ -257,8 +261,7 @@ export default function Pokedex() {
               BOX
             </span>
           </div>
-          {/* Botão amarelo para abrir a Box */}
-          <button className={styles.greenBtn} onClick={() => setShowBox(true)} />
+          <button className={styles.greenBtn} onClick={() => setShowBox(true)} data-tutorial="box-btn" />
         </div>
       </div>
 
@@ -275,7 +278,12 @@ export default function Pokedex() {
               {box.length === 0
                 ? <p className={styles.empty}>Nenhum Pokémon no BOX</p>
                 : box.map((p) => (
-                  <div key={p.id} className={styles.pokeCell}>
+                  <div
+                    key={p.id}
+                    className={styles.pokeCell}
+                    onClick={() => setSelectedPokemon(p)}
+                    style={{ cursor: "pointer" }}
+                  >
                     {p.numero_pokedex && (
                       <img
                         src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.numero_pokedex}.png`}
@@ -296,17 +304,25 @@ export default function Pokedex() {
         <PokemonCard
           onClose={() => setShowPokemonCard(false)}
           treinadorId={treinador?.id}
-          onSave={() => carregarDados()}
+          time={time}
+          onSave={carregarDados}
         />
       )}
-
-      {/* TrainerCard agora usa dois modos: edit (editar) e create (novo) */}
       {showTrainerCard && (
         <TrainerCard
           trainerMode={trainerModalMode}
           treinador={trainerModalMode === "edit" ? treinador : null}
           fechar={() => setShowTrainerCard(false)}
           salvar={trainerModalMode === "edit" ? salvarTreinador : cadastrarNovoTreinador}
+        />
+      )}
+
+      {/* Modal dos detalhes do Pokémon + botão liberar */}
+      {selectedPokemon && (
+        <PokemonInfoModal
+          pokemon={selectedPokemon}
+          onLiberar={liberarPokemon}
+          onClose={() => setSelectedPokemon(null)}
         />
       )}
     </div>
