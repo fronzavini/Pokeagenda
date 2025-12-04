@@ -13,7 +13,7 @@ def conectar():
         #cursorclass=pymysql.cursors.DictCursor  # retorna resultados como dicionários
     )
 
-from db_config import conectar
+#from db_config import conectar
 
 
 # =====================================================

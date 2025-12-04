@@ -11,14 +11,33 @@ export default function Pokedex() {
   const [showTrainerCard, setShowTrainerCard] = useState(false);
 
   const salvarTreinador = (dados) => {
-    console.log("Treinador salvo:", dados);
+    // envia os dados do treinador para o backend
+    try {
+      fetch("http://localhost:5000/criar_treinador", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          console.log("Resposta do backend (criar_treinador):", json);
+          // feedback visual opcional
+          if (json && json.message) alert(json.message);
+        })
+        .catch((err) => {
+          console.error("Erro ao salvar treinador:", err);
+          alert("Erro ao salvar treinador. Veja o console para detalhes.");
+        });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const treinador = {
     id: 1,
     nome: "Ash Ketchum",
     email: "ash@pokemon.com",
-    cpf: "123.456.789-00",
+    cpf: "12345678900",
     foto: "https://i.imgur.com/7wQ9Z3F.png",
     cidade: "Pallet Town",
   };
@@ -45,13 +64,14 @@ export default function Pokedex() {
       <div className={styles.leftPanel}>
         <div className={styles.topRow}>
           <button
+            data-tutorial="camera"
             className={`${styles.camera} ${
               showImage ? styles.cameraActive : ""
             }`}
             onClick={handleCameraClick}
           ></button>
 
-          <div className={styles.lights}>
+          <div data-tutorial="lights" className={styles.lights}>
             <span
               className={`${styles.light} ${lightsOn ? styles.lightOn : ""}`}
             ></span>
@@ -64,7 +84,7 @@ export default function Pokedex() {
           </div>
         </div>
 
-        <div className={styles.mainScreen}>
+        <div data-tutorial="screen" className={styles.mainScreen}>
           <div className={styles.screenInner}>
             {showImage && (
               <img
@@ -87,14 +107,17 @@ export default function Pokedex() {
 
         <div className={styles.controlGrid}>
           <button
+            data-tutorial="small-btn"
             className={styles.smallBtn}
             onClick={handleSmallBtnClick}
           ></button>
           <button
+            data-tutorial="rect-btn"
             className={styles.rectBtn}
             onClick={handleRectBtnClick}
           ></button>
           <button
+            data-tutorial="dpad"
             className={styles.dpad}
             onClick={() => {
               if (showImage) setShowPokemonCard((prev) => !prev);
@@ -143,13 +166,14 @@ export default function Pokedex() {
 
         <div className={styles.bottomSlots}>
           <button
+            data-tutorial="slot-1"
             className={styles.slot}
             onClick={() => {
               if (showImage) setShowTrainerCard(true);
             }}
           ></button>
 
-          <button className={styles.slot}></button>
+          <button data-tutorial="slot-2" className={styles.slot}></button>
         </div>
       </div>
       {showPokemonCard && (

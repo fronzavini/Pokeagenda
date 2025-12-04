@@ -130,27 +130,41 @@ export default function PokemonCard({ onClose }) {
     updatePokemonImage(pokemonFullData, shiny);
   }, [shiny, pokemonFullData, updatePokemonImage]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!pokemonFullData) {
       alert("Por favor, selecione um Pokémon antes de salvar.");
       return;
     }
-    const dadosParaSalvar = {
-      nomePokemon: nome,
+
+    const payload = {
+      nome: nome,
+      shiny: !!shiny,
       apelido: apelido || nome,
-      numero: pokemon.numero,
+      numero_pokedex: pokemon.numero,
       tipo: pokemon.tipo,
+      imagem_url: pokemon.imagem,
       altura: pokemon.altura,
       peso: pokemon.peso,
       habilidade: pokemon.habilidade,
-      shiny: shiny,
-      localizacao: localizacao,
-      imagemUrl: pokemon.imagem,
     };
-    console.log("Dados do Pokémon salvos:", dadosParaSalvar);
-    alert(
-      `Pokémon ${dadosParaSalvar.apelido} (${dadosParaSalvar.nomePokemon}) salvo em ${localizacao} com sucesso!`
-    );
+
+    try {
+      const res = await fetch("http://localhost:5000/criar_pokemon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      console.log("Resposta do backend (criar_pokemon):", json);
+      if (json && json.message) {
+        alert(json.message);
+      } else {
+        alert(`Pokémon ${payload.apelido} salvo com sucesso!`);
+      }
+    } catch (err) {
+      console.error("Erro ao salvar Pokémon:", err);
+      alert("Erro ao salvar Pokémon. Veja o console para detalhes.");
+    }
   };
 
   return (

@@ -213,5 +213,10 @@ def listar_pokemons_do_treinador(treinador_id):
 # =====================================================
 # EXECUÇÃO DO APP
 # =====================================================
+
+@app.route('/trocar_treinador', methods = ['POST'])
+def trocar_treinador(treinador_nome, treinador_email):
+    
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
