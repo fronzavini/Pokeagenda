@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/Pokedex.module.css";
 import PokemonCard from "./PokemonCard";
 import TrainerCard from "./TrainerCard";
@@ -11,71 +11,104 @@ export default function Pokedex() {
   const [showTrainerCard, setShowTrainerCard] = useState(false);
   const [showBox, setShowBox] = useState(false);
 
-  const salvarTreinador = (dados) => {
+  const [treinador, setTreinador] = useState(null);
+  const [treinadores, setTreinadores] = useState([]);
+  const [selectedTreinadorId, setSelectedTreinadorId] = useState(null);
+  const [trainerModalMode, setTrainerModalMode] = useState("edit"); // "edit" ou "create"
+
+  const [time, setTime] = useState([]);
+  const [box, setBox] = useState([]);
+
+  // Busca todos os treinadores
+  const carregarTreinadores = async () => {
     try {
-      fetch("http://localhost:5000/criar_treinador", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dados),
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          console.log("Resposta do backend (criar_treinador):", json);
-          if (json && json.message) alert(json.message);
-        })
-        .catch((err) => {
-          console.error("Erro ao salvar treinador:", err);
-          alert("Erro ao salvar treinador. Veja o console para detalhes.");
-        });
+      const res = await fetch("http://localhost:5000/listar_treinadores");
+      const listaT = await res.json();
+      setTreinadores(listaT || []);
+      if ((!selectedTreinadorId || !listaT.some(t => t.id === selectedTreinadorId)) && listaT.length > 0) {
+        setSelectedTreinadorId(listaT[0].id);
+      }
     } catch (err) {
-      console.error(err);
+      setTreinadores([]);
     }
   };
 
-  const treinador = {
-    id: 1,
-    nome: "Ash Ketchum",
-    email: "ash@pokemon.com",
-    cpf: "12345678900",
-    foto: "https://i.imgur.com/7wQ9Z3F.png",
-    cidade: "Pallet Town",
+  // Busca treinador e seus pokémons
+  const carregarDados = async (forcaId = null) => {
+    try {
+      const usedId = forcaId || selectedTreinadorId;
+      if (!usedId) return;
+      // Treinador
+      const resT = await fetch(`http://localhost:5000/treinador/${usedId}`);
+      const trainerData = await resT.json();
+      setTreinador(trainerData && trainerData.id ? trainerData : null);
+
+      // Pokémons por treinador
+      const resP = await fetch(`http://localhost:5000/listar_pokemons_por_treinador/${usedId}`);
+      const lista = await resP.json();
+      const arrayPokemons = Array.isArray(lista) ? lista : [];
+      const timeList = arrayPokemons.filter((p) =>
+        ((p.loca || p.local) || "").toLowerCase() === "time"
+      );
+      const boxList = arrayPokemons.filter((p) =>
+        ((p.loca || p.local) || "").toLowerCase() === "box"
+      );
+      setTime(timeList);
+      setBox(boxList);
+    } catch (err) {
+      setTreinador(null);
+      setTime([]);
+      setBox([]);
+    }
   };
 
-  // --- Lista de pokémons base (para os grids e box) ---
-  const baseList = [
-    {
-      nome: "Steelix",
-      img: "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/208_f2.png",
-    },
-    {
-      nome: "Geodude",
-      img: "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/074.png",
-    },
-    {
-      nome: "Crobat",
-      img: "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/169.png",
-    },
-    {
-      nome: "Sudowoodo",
-      img: "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/185.png",
-    },
-    {
-      nome: "Chansey",
-      img: "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/113.png",
-    },
-    {
-      nome: "Comfey",
-      img: "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/764.png",
-    },
-  ];
+  // Inicializa lista de treinadores, e carrega time/box do ativo
+  useEffect(() => {
+    carregarTreinadores();
+  }, []);
 
-  // Cria lista longa (simula infinitos pokémons)
-  const boxPokemons = Array.from({ length: 60 }, (_, i) => {
-    const p = baseList[i % baseList.length];
-    return { ...p, nome: `${p.nome} #${i + 1}` };
-  });
+  useEffect(() => {
+    if (selectedTreinadorId) {
+      carregarDados(selectedTreinadorId);
+    }
+  }, [selectedTreinadorId]);
 
-  // --- Botões e interações ---
+  // Salvar/editar treinador existente
+  const salvarTreinador = (dados) => {
+    fetch(`http://localhost:5000/editar_treinador/${dados.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        carregarTreinadores();
+        carregarDados(dados.id);
+      });
+  };
+
+  // Cadastrar novo treinador
+  const cadastrarNovoTreinador = (dados) => {
+    fetch(`http://localhost:5000/criar_treinador`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados),
+    })
+      .then((res) => res.json())
+      .then(() =>
+        carregarTreinadores().then(() => {
+          // Seleciona o último treinador cadastrado
+          setTimeout(() => {
+            if (treinadores.length > 0) {
+              setSelectedTreinadorId(
+                treinadores[treinadores.length - 1].id
+              );
+            }
+          }, 450);
+        })
+      );
+  };
+
   const handleCameraClick = () => {
     const next = !showImage;
     setShowImage(next);
@@ -87,193 +120,193 @@ export default function Pokedex() {
     if (showImage) setLightsOn((prev) => !prev);
   };
 
-  const handleRectBtnClick = () => {
-    if (showImage) setShowTrainerCard(true);
-    else alert("Ative a câmera primeiro!");
-  };
-
   return (
     <div className={styles.wrapper}>
-      {/* ====== ESQUERDA ====== */}
+      <div
+        style={{
+          position: "absolute",
+          top: 25,
+          left: 40,
+          zIndex: 5,
+          background: "#fff",
+          borderRadius: "8px",
+          padding: "2px 10px 2px 18px",
+          fontSize: 11,
+          boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+          display: "flex",
+          alignItems: "center"
+        }}
+      >
+        Treinador:&nbsp;
+        <select
+          value={selectedTreinadorId || ""}
+          onChange={e => setSelectedTreinadorId(Number(e.target.value))}
+          style={{
+            fontFamily: '"Press Start 2P", monospace',
+            fontSize: 10,
+            border: "1px solid #bbb",
+            borderRadius: 4,
+            background: "#f5f5f5",
+            padding: "3px 8px"
+          }}
+        >
+          {treinadores.map((t) => (
+            <option value={t.id} key={t.id}>
+              {t.nome}
+            </option>
+          ))}
+        </select>
+        <button
+          style={{
+            marginLeft: 10,
+            padding: "2px 8px",
+            fontSize: 12,
+            background: "#ffeb3b",
+            border: "1px solid #bca800",
+            borderRadius: "5px",
+            fontFamily: '"Press Start 2P", monospace',
+            cursor: "pointer"
+          }}
+          onClick={() => {
+            setTrainerModalMode("create");
+            setShowTrainerCard(true);
+          }}
+        >
+          + Novo Treinador
+        </button>
+      </div>
       <div className={styles.leftPanel}>
         <div className={styles.topRow}>
           <button
-            data-tutorial="camera"
-            className={`${styles.camera} ${
-              showImage ? styles.cameraActive : ""
-            }`}
+            className={`${styles.camera} ${showImage ? styles.cameraActive : ""}`}
             onClick={handleCameraClick}
           />
-          <div data-tutorial="lights" className={styles.lights}>
-            <span
-              className={`${styles.light} ${lightsOn ? styles.lightOn : ""}`}
-            />
-            <span
-              className={`${styles.light} ${lightsOn ? styles.lightOn : ""}`}
-            />
-            <span
-              className={`${styles.light} ${lightsOn ? styles.lightOn : ""}`}
-            />
+          <div className={styles.lights}>
+            <span className={`${styles.light} ${lightsOn ? styles.lightOn : ""}`} />
+            <span className={`${styles.light} ${lightsOn ? styles.lightOn : ""}`} />
+            <span className={`${styles.light} ${lightsOn ? styles.lightOn : ""}`} />
           </div>
         </div>
-
-        <div data-tutorial="screen" className={styles.mainScreen}>
+        <div className={styles.mainScreen}>
           <div className={styles.topLeds}>
             <span className={styles.ledTiny}></span>
             <span className={styles.ledTiny}></span>
           </div>
 
           <div className={styles.frameVents}>
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span>
           </div>
 
           <div className={styles.screenInner}>
-            {showImage && (
-              <img
-                src="https://m.media-amazon.com/images/I/41Jw-Dom9zL._AC_SY350_.jpg"
-                alt="Treinador"
-                className={styles.screenImage}
-              />
+            {showImage && treinador?.foto && (
+              <img src={treinador.foto} className={styles.screenImage} alt="foto treinador"/>
             )}
-            <span className={styles.scanlines} aria-hidden="true"></span>
-            <span
-              className={`${styles.statusLed} ${
-                showImage ? styles.statusOn : ""
-              }`}
-              aria-hidden="true"
-            ></span>
+            <span className={styles.scanlines} />
+            <span className={`${styles.statusLed} ${showImage ? styles.statusOn : ""}`} />
           </div>
         </div>
-
         <div className={styles.listaWrapped}>
-          <button
-            className={`${styles.listra} ${stripesOn ? styles.stripeOn : ""}`}
-          />
-          <button
-            className={`${styles.listra} ${stripesOn ? styles.stripeOn : ""}`}
-          />
+          <button className={`${styles.listra} ${stripesOn ? styles.stripeOn : ""}`} />
+          <button className={`${styles.listra} ${stripesOn ? styles.stripeOn : ""}`} />
         </div>
 
         <div className={styles.controlGrid}>
+          <button className={styles.smallBtn} onClick={handleSmallBtnClick} />
           <button
-            data-tutorial="small-btn"
-            className={styles.smallBtn}
-            onClick={handleSmallBtnClick}
-          />
-          <button
-            data-tutorial="rect-btn"
             className={styles.rectBtn}
-            onClick={handleRectBtnClick}
+            onClick={() => {
+              setTrainerModalMode("edit");
+              setShowTrainerCard(true);
+            }}
           />
           <button
-            data-tutorial="dpad"
             className={styles.dpad}
-            onClick={() => showImage && setShowPokemonCard((prev) => !prev)}
+            onClick={() => showImage && setShowPokemonCard(true)}
             disabled={!showImage}
           >
             +
           </button>
         </div>
       </div>
-
       <div className={styles.hinge}></div>
-
-      {/* ====== DIREITA ====== */}
       <div className={styles.rightPanel}>
         <div className={styles.topDisplay}>
-          <span
-            className={`${styles.fade} ${showImage ? styles.show : ""} ${
-              styles.time
-            }`}
-          >
+          <span className={`${styles.fade} ${showImage ? styles.show : ""} ${styles.time}`}>
             TIME
           </span>
         </div>
-
         <div className={styles.keyGrid}>
-          {baseList.map((p, i) => (
-            <div
-              key={i}
-              className={`${styles.pokeCell} ${
-                !showImage ? styles.pokeCellOff : ""
-              }`}
-              onClick={() => {
-                if (showImage) setShowPokemonCard(true);
-              }}
-            >
-              {showImage ? (
-                <>
-                  <img src={p.img} alt={p.nome} className={styles.pokeImg} />
-                  <span className={styles.pokeName}>{p.nome}</span>
-                </>
-              ) : (
-                <div className={styles.pokePlaceholder}></div>
-              )}
-            </div>
-          ))}
+          {Array.from({ length: 6 }).map((_, i) => {
+            const p = showImage ? time[i] : null;
+            return (
+              <div key={i} className={styles.pokeCell}>
+                {p && p.numero_pokedex && (
+                  <img
+                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.numero_pokedex}.png`}
+                    className={styles.pokeImg}
+                    alt={p.apelido || p.nome || ""}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
-
         <div className={styles.secondaryControls}>
           <div className={styles.slider}>
-            <span
-              className={`${styles.fade} ${showImage ? styles.show : ""} ${
-                styles.box
-              }`}
-            >
+            <span className={`${styles.fade} ${showImage ? styles.show : ""} ${styles.box}`}>
               BOX
             </span>
           </div>
-          <button
-            className={styles.greenBtn}
-            onClick={() => setShowBox(true)} // 🔥 abre o BOX
-          ></button>
+          {/* Botão amarelo para abrir a Box */}
+          <button className={styles.greenBtn} onClick={() => setShowBox(true)} />
         </div>
       </div>
 
-      {/* ====== POPUP DO BOX ====== */}
       {showBox && (
         <div className={styles.modalOverlay} onClick={() => setShowBox(false)}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <span className={styles.modalTitle}>BOX</span>
-              <button
-                className={styles.modalClose}
-                onClick={() => setShowBox(false)}
-              >
+              <button className={styles.modalClose} onClick={() => setShowBox(false)}>
                 ×
               </button>
             </div>
-
             <div className={styles.boxGrid}>
-              {boxPokemons.map((p, i) => (
-                <div
-                  key={i}
-                  className={styles.pokeCell}
-                  onClick={() => {
-                    setShowBox(false);
-                    setShowPokemonCard(true);
-                  }}
-                >
-                  <img src={p.img} alt={p.nome} className={styles.pokeImg} />
-                  <span className={styles.pokeName}>{p.nome}</span>
-                </div>
-              ))}
+              {box.length === 0
+                ? <p className={styles.empty}>Nenhum Pokémon no BOX</p>
+                : box.map((p) => (
+                  <div key={p.id} className={styles.pokeCell}>
+                    {p.numero_pokedex && (
+                      <img
+                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.numero_pokedex}.png`}
+                        className={styles.pokeImg}
+                        alt={p.apelido || p.nome}
+                      />
+                    )}
+                    <span className={styles.pokeName}>{p.nome || p.apelido}</span>
+                  </div>
+                ))
+              }
             </div>
           </div>
         </div>
       )}
 
-      {/* ====== CARDS ====== */}
       {showPokemonCard && (
-        <PokemonCard onClose={() => setShowPokemonCard(false)} />
+        <PokemonCard
+          onClose={() => setShowPokemonCard(false)}
+          treinadorId={treinador?.id}
+          onSave={() => carregarDados()}
+        />
       )}
+
+      {/* TrainerCard agora usa dois modos: edit (editar) e create (novo) */}
       {showTrainerCard && (
         <TrainerCard
-          treinador={treinador}
+          trainerMode={trainerModalMode}
+          treinador={trainerModalMode === "edit" ? treinador : null}
           fechar={() => setShowTrainerCard(false)}
-          salvar={salvarTreinador}
+          salvar={trainerModalMode === "edit" ? salvarTreinador : cadastrarNovoTreinador}
         />
       )}
     </div>

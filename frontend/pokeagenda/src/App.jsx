@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Pokedex from "./components/pokedex";
+import Pokedex from "./components/Pokedex";
 import Botao from "./components/Botao";
 import Tutorial from "./components/Tutorial";
 import "./App.css";

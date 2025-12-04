@@ -1,20 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "../styles/trainerCard.module.css";
 
-export default function TrainerCard({ treinador, fechar, salvar }) {
-  const [form, setForm] = useState({
-    id: treinador.id,
-    nome: treinador.nome,
-    email: treinador.email,
-    cpf: treinador.cpf,
-    foto: treinador.foto,
-    cidade: treinador.cidade,
-    // Adicionando campos para replicar o meme, usando valores padrão se não existirem
-    idade: treinador.idade || "???",
-    region: treinador.region || "Kanto",
-    firstPokemon: treinador.firstPokemon || "Charizard",
-    trainerClass: treinador.trainerClass || "Kanto Champion",
-  });
+export default function TrainerCard({ treinador, fechar, salvar, trainerMode }) {
+  const initialForm = {
+    id: treinador?.id || "",
+    nome: treinador?.nome || "",
+    email: treinador?.email || "",
+    cpf: treinador?.cpf || "",
+    foto: treinador?.foto || "",
+    cidade: treinador?.cidade || ""
+  };
+
+  const [form, setForm] = useState(initialForm);
+
+  useEffect(() => {
+    if (trainerMode === "create") {
+      setForm({
+        id: "",
+        nome: "",
+        email: "",
+        cpf: "",
+        foto: "",
+        cidade: ""
+      });
+    } else if (trainerMode === "edit" && treinador) {
+      setForm(initialForm);
+    }
+    // eslint-disable-next-line
+  }, [trainerMode, treinador]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,24 +36,18 @@ export default function TrainerCard({ treinador, fechar, salvar }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!form.nome || !form.email || !form.cpf || !form.foto || !form.cidade) {
+      alert("Preencha todos os campos obrigatórios!");
+      return;
+    }
     salvar(form);
     fechar();
   };
 
   return (
     <div className={styles.overlay}>
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/640px-International_Pok%C3%A9mon_logo.svg.png"
-        alt="Pokémon Logo"
-        className={styles.pokemonLogo}
-      />
       <div className={styles.card}>
-        {/* CABEÇALHO */}
-
         <div className={styles.header}>
-          {/* Use a tag <img> para o logo Pokémon */}
-
-          {/* BOTÕES */}
           <div className={styles.buttons}>
             <button type="button" className={styles.cancel} onClick={fechar}>
               Cancelar
@@ -50,17 +57,14 @@ export default function TrainerCard({ treinador, fechar, salvar }) {
               className={styles.save}
               onClick={handleSubmit}
             >
-              Salvar
+              {trainerMode === "edit" ? "Salvar" : "Cadastrar"}
             </button>
           </div>
         </div>
-
         <form onSubmit={handleSubmit} className={styles.formContent}>
-          {/* COLUNA DA ESQUERDA: Trainer Design (Imagem) */}
           <div className={styles.trainerDesignColumn}>
             <h3 className={styles.sectionTitle}>Trainer Design</h3>
             <div className={styles.designContent}>
-              {/* Campo URL da Foto */}
               <label className={styles.photoLabel}>
                 Foto (URL):
                 <input
@@ -69,10 +73,9 @@ export default function TrainerCard({ treinador, fechar, salvar }) {
                   value={form.foto}
                   onChange={handleChange}
                   className={styles.inputField}
+                  required
                 />
               </label>
-
-              {/* Preview da Foto */}
               {form.foto && (
                 <img
                   src={form.foto}
@@ -82,12 +85,9 @@ export default function TrainerCard({ treinador, fechar, salvar }) {
               )}
             </div>
           </div>
-
-          {/* COLUNA DA DIREITA: Info (Detalhes) */}
           <div className={styles.infoColumn}>
             <h3 className={styles.sectionTitle}>Info</h3>
             <div className={styles.infoContent}>
-              {/* Campo Nome */}
               <label className={styles.infoRow}>
                 <span className={styles.label}>Nome:</span>
                 <input
@@ -99,20 +99,6 @@ export default function TrainerCard({ treinador, fechar, salvar }) {
                   className={styles.inputField}
                 />
               </label>
-
-              {/* Campo Idade */}
-              <label className={styles.infoRow}>
-                <span className={styles.label}>Idade:</span>
-                <input
-                  type="text"
-                  name="idade"
-                  value={form.idade}
-                  onChange={handleChange}
-                  className={styles.inputField}
-                />
-              </label>
-
-              {/* Campo Email */}
               <label className={styles.infoRow}>
                 <span className={styles.label}>Email:</span>
                 <input
@@ -124,8 +110,6 @@ export default function TrainerCard({ treinador, fechar, salvar }) {
                   className={styles.inputField}
                 />
               </label>
-
-              {/* Campo CPF */}
               <label className={styles.infoRow}>
                 <span className={styles.label}>CPF:</span>
                 <input
@@ -137,8 +121,6 @@ export default function TrainerCard({ treinador, fechar, salvar }) {
                   className={styles.inputField}
                 />
               </label>
-
-              {/* Campo Cidade (Hometown) */}
               <label className={styles.infoRow}>
                 <span className={styles.label}>Cidade (Hometown):</span>
                 <input
