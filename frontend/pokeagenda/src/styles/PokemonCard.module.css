@@ -53,7 +53,7 @@
   justify-content: flex-end;
   gap: 15px;
   margin-top: 13px;
-  margin-left: 380px;
+  margin-left: 120px;
 }
 
 .buttons button {
@@ -313,13 +313,8 @@
 
 /* Logo Pokémon como Imagem */
 .pokemonLogo {
-  /* POSICIONAMENTO LIVRE E POR CIMA */
-  position: absolute;
-  top: 40px; /* Distância do topo do overlay */
-  left: 370px; /* Distância da esquerda do overlay */
-  transform: none; /* Remove a centralização (translateX) */
-  width: 350px; /* Mantém o tamanho da imagem */
-  height: auto;
-  z-index: 200; /* Garante que fique por cima do card */
-  filter: drop-shadow(4px 4px 5px rgba(0, 0, 0, 0.5));
+  width: 170px;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
 }

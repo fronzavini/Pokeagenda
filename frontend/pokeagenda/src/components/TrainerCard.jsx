@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react";
 import styles from "../styles/trainerCard.module.css";
 
-export default function TrainerCard({ treinador, fechar, salvar, trainerMode }) {
+export default function TrainerCard({
+  treinador,
+  fechar,
+  salvar,
+  trainerMode,
+}) {
   const initialForm = {
     id: treinador?.id || "",
     nome: treinador?.nome || "",
     email: treinador?.email || "",
     cpf: treinador?.cpf || "",
     foto: treinador?.foto || "",
-    cidade: treinador?.cidade || ""
+    cidade: treinador?.cidade || "",
   };
 
   const [form, setForm] = useState(initialForm);
@@ -21,7 +26,7 @@ export default function TrainerCard({ treinador, fechar, salvar, trainerMode }) 
         email: "",
         cpf: "",
         foto: "",
-        cidade: ""
+        cidade: "",
       });
     } else if (trainerMode === "edit" && treinador) {
       setForm(initialForm);
@@ -48,6 +53,11 @@ export default function TrainerCard({ treinador, fechar, salvar, trainerMode }) 
     <div className={styles.overlay}>
       <div className={styles.card}>
         <div className={styles.header}>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/640px-International_Pok%C3%A9mon_logo.svg.png"
+            alt="Pokémon Logo"
+            className={styles.pokemonLogo}
+          />
           <div className={styles.buttons}>
             <button type="button" className={styles.cancel} onClick={fechar}>
               Cancelar

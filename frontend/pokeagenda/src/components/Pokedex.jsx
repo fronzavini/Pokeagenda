@@ -13,7 +13,6 @@ export default function Pokedex() {
   const [showBox, setShowBox] = useState(false);
   const [boxSearch, setBoxSearch] = useState("");
 
-
   const [treinador, setTreinador] = useState(null);
   const [treinadores, setTreinadores] = useState([]);
   const [selectedTreinadorId, setSelectedTreinadorId] = useState(null);

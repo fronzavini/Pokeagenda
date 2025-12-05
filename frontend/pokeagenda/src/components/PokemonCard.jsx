@@ -30,7 +30,12 @@ export default function PokemonCard({ onClose, treinadorId, onSave, time }) {
   const [evolucao, setEvolucao] = useState("Não possui");
 
   const updatePokemonImage = useCallback((data, isShiny) => {
-    if (data && data.sprites && data.sprites.other && data.sprites.other["official-artwork"]) {
+    if (
+      data &&
+      data.sprites &&
+      data.sprites.other &&
+      data.sprites.other["official-artwork"]
+    ) {
       setPokemon((prev) => ({
         ...prev,
         imagem: isShiny
@@ -68,7 +73,9 @@ export default function PokemonCard({ onClose, treinadorId, onSave, time }) {
       }
 
       // 1) buscar species para obter evolution_chain.url
-      const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${idPokemon}`);
+      const speciesRes = await fetch(
+        `https://pokeapi.co/api/v2/pokemon-species/${idPokemon}`
+      );
       if (!speciesRes.ok) {
         setEvolucao("Não possui");
         return;
@@ -117,33 +124,10 @@ export default function PokemonCard({ onClose, treinadorId, onSave, time }) {
     }
   }, []);
 
-  const buscarPokemon = useCallback(async (identificador) => {
-    // normaliza identificador para string (evita erro com números)
-    if (!identificador && identificador !== 0) {
-      setPokemon({
-        imagem: "",
-        numero: "",
-        tipo: "",
-        altura: "",
-        peso: "",
-        habilidade: "",
-      });
-      setPokemonFullData(null);
-      setHabilidadesDisponiveis([]);
-      setHabilidade("");
-      setEvolucao("Não possui");
-      return;
-    }
-
-    const idStr = String(identificador);
-
-    try {
-      const res = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/${idStr.toLowerCase()}`
-      );
-
-      if (!res.ok) {
-        // não encontrou
+  const buscarPokemon = useCallback(
+    async (identificador) => {
+      // normaliza identificador para string (evita erro com números)
+      if (!identificador && identificador !== 0) {
         setPokemon({
           imagem: "",
           numero: "",
@@ -159,46 +143,72 @@ export default function PokemonCard({ onClose, treinadorId, onSave, time }) {
         return;
       }
 
-      const data = await res.json();
-      setPokemonFullData(data);
+      const idStr = String(identificador);
 
-      const abilities = (data.abilities || []).map((a) => a.ability.name);
-      setHabilidadesDisponiveis(abilities);
-      const primeiraHab = abilities[0] || "";
-      setHabilidade(primeiraHab);
+      try {
+        const res = await fetch(
+          `https://pokeapi.co/api/v2/pokemon/${idStr.toLowerCase()}`
+        );
 
-      setPokemon({
-        imagem: "",
-        numero: data.id,
-        tipo: (data.types || []).map((t) => t.type.name).join(", "),
-        altura: data.height / 10 + " m",
-        peso: data.weight / 10 + " kg",
-        habilidade: primeiraHab,
-      });
+        if (!res.ok) {
+          // não encontrou
+          setPokemon({
+            imagem: "",
+            numero: "",
+            tipo: "",
+            altura: "",
+            peso: "",
+            habilidade: "",
+          });
+          setPokemonFullData(null);
+          setHabilidadesDisponiveis([]);
+          setHabilidade("");
+          setEvolucao("Não possui");
+          return;
+        }
 
-      // atualiza imagem imediatamente (não depender só do useEffect)
-      updatePokemonImage(data, shiny);
+        const data = await res.json();
+        setPokemonFullData(data);
 
-      // busca evolução usando species -> chain
-      buscarEvolucao(data.id);
+        const abilities = (data.abilities || []).map((a) => a.ability.name);
+        setHabilidadesDisponiveis(abilities);
+        const primeiraHab = abilities[0] || "";
+        setHabilidade(primeiraHab);
 
-      setSugestoes([]);
-    } catch (err) {
-      console.error("Erro ao buscar Pokémon:", err);
-      setPokemon({
-        imagem: "",
-        numero: "",
-        tipo: "",
-        altura: "",
-        peso: "",
-        habilidade: "",
-      });
-      setPokemonFullData(null);
-      setHabilidadesDisponiveis([]);
-      setHabilidade("");
-      setEvolucao("Não possui");
-    }
-  }, [shiny, updatePokemonImage, buscarEvolucao]);
+        setPokemon({
+          imagem: "",
+          numero: data.id,
+          tipo: (data.types || []).map((t) => t.type.name).join(", "),
+          altura: data.height / 10 + " m",
+          peso: data.weight / 10 + " kg",
+          habilidade: primeiraHab,
+        });
+
+        // atualiza imagem imediatamente (não depender só do useEffect)
+        updatePokemonImage(data, shiny);
+
+        // busca evolução usando species -> chain
+        buscarEvolucao(data.id);
+
+        setSugestoes([]);
+      } catch (err) {
+        console.error("Erro ao buscar Pokémon:", err);
+        setPokemon({
+          imagem: "",
+          numero: "",
+          tipo: "",
+          altura: "",
+          peso: "",
+          habilidade: "",
+        });
+        setPokemonFullData(null);
+        setHabilidadesDisponiveis([]);
+        setHabilidade("");
+        setEvolucao("Não possui");
+      }
+    },
+    [shiny, updatePokemonImage, buscarEvolucao]
+  );
 
   const handleNomeChange = (e) => {
     const texto = e.target.value;
@@ -295,13 +305,13 @@ export default function PokemonCard({ onClose, treinadorId, onSave, time }) {
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/640px-International_Pok%C3%A9mon_logo.svg.png"
-        alt="Pokémon Logo"
-        className={styles.pokemonLogo}
-      />
       <div className={styles.card} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/640px-International_Pok%C3%A9mon_logo.svg.png"
+            alt="Pokémon Logo"
+            className={styles.pokemonLogo}
+          />
           <div className={styles.buttons}>
             {onClose && (
               <button type="button" className={styles.cancel} onClick={onClose}>
@@ -317,7 +327,9 @@ export default function PokemonCard({ onClose, treinadorId, onSave, time }) {
           <div className={styles.trainerDesignColumn}>
             <h3 className={styles.sectionTitle}>Pokémon</h3>
             <div className={styles.designContent}>
-              <div className={`${styles.imgBox} ${shiny ? styles.holograma : ""}`}>
+              <div
+                className={`${styles.imgBox} ${shiny ? styles.holograma : ""}`}
+              >
                 <img src={pokemon.imagem || ""} alt="pokemon" />
               </div>
             </div>
@@ -387,7 +399,6 @@ export default function PokemonCard({ onClose, treinadorId, onSave, time }) {
                 >
                   <option value="box">Box</option>
                   <option value="time">Time</option>
-
                 </select>
               </label>
 
