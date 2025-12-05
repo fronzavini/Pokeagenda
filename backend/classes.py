@@ -289,6 +289,25 @@ class Pokemon:
         except MySQLError as e:
             return f"Erro ao atualizar pokemon: {e}"
 
+    def trocar_loca(id):
+        try:
+            conexao = conectar()
+            with conexao:
+                with conexao.cursor() as cursor:
+                    # Primeiro, obter a loca atual
+                    cursor.execute("SELECT loca FROM Pokemon WHERE id=%s", (id,))
+                    resultado = cursor.fetchone()
+                    if not resultado:
+                        return "Pokemon não encontrado."
+                    loca_atual = resultado['loca']
+                    # Trocar loca
+                    nova_loca = 'box' if loca_atual == 'time' else 'time'
+                    cursor.execute("UPDATE Pokemon SET loca=%s WHERE id=%s", (nova_loca, id))
+                conexao.commit()
+            return f"Loca do Pokemon trocada para {nova_loca} com sucesso."
+        except MySQLError as e:
+            return f"Erro ao trocar loca do pokemon: {e}"
+
     @staticmethod
     def deletar_pokemon(id):
         try:

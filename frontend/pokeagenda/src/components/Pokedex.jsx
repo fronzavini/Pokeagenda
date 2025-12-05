@@ -11,6 +11,8 @@ export default function Pokedex() {
   const [showPokemonCard, setShowPokemonCard] = useState(false);
   const [showTrainerCard, setShowTrainerCard] = useState(false);
   const [showBox, setShowBox] = useState(false);
+  const [boxSearch, setBoxSearch] = useState("");
+
 
   const [treinador, setTreinador] = useState(null);
   const [treinadores, setTreinadores] = useState([]);
@@ -268,37 +270,80 @@ export default function Pokedex() {
       {showBox && (
         <div className={styles.modalOverlay} onClick={() => setShowBox(false)}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            
+            {/* Cabeçalho */}
             <div className={styles.modalHeader}>
               <span className={styles.modalTitle}>BOX</span>
               <button className={styles.modalClose} onClick={() => setShowBox(false)}>
                 ×
               </button>
             </div>
+
+            {/* 🔎 Campo de busca */}
+            <input
+              type="text"
+              placeholder="Buscar Pokémon..."
+              className={styles.searchInput}
+              value={boxSearch || ""}
+              onChange={(e) => setBoxSearch(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px",
+                marginBottom: "15px",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+                fontSize: "15px"
+              }}
+            />
+
+            {/* Lista do BOX */}
             <div className={styles.boxGrid}>
-              {box.length === 0
-                ? <p className={styles.empty}>Nenhum Pokémon no BOX</p>
-                : box.map((p) => (
-                  <div
-                    key={p.id}
-                    className={styles.pokeCell}
-                    onClick={() => setSelectedPokemon(p)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {p.numero_pokedex && (
-                      <img
-                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.numero_pokedex}.png`}
-                        className={styles.pokeImg}
-                        alt={p.apelido || p.nome}
-                      />
-                    )}
-                    <span className={styles.pokeName}>{p.nome || p.apelido}</span>
-                  </div>
-                ))
-              }
+              {box
+                .filter((p) => {
+                  if (!boxSearch) return true;
+                  const termo = boxSearch.toLowerCase();
+                  return (
+                    p.nome?.toLowerCase().includes(termo) ||
+                    p.apelido?.toLowerCase().includes(termo) ||
+                    String(p.numero_pokedex).includes(termo)
+                  );
+                })
+                .length === 0 ? (
+                <p className={styles.empty}>Nenhum Pokémon encontrado</p>
+              ) : (
+                box
+                  .filter((p) => {
+                    if (!boxSearch) return true;
+                    const termo = boxSearch.toLowerCase();
+                    return (
+                      p.nome?.toLowerCase().includes(termo) ||
+                      p.apelido?.toLowerCase().includes(termo) ||
+                      String(p.numero_pokedex).includes(termo)
+                    );
+                  })
+                  .map((p) => (
+                    <div
+                      key={p.id}
+                      className={styles.pokeCell}
+                      onClick={() => setSelectedPokemon(p)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {p.numero_pokedex && (
+                        <img
+                          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.numero_pokedex}.png`}
+                          className={styles.pokeImg}
+                          alt={p.apelido || p.nome}
+                        />
+                      )}
+                      <span className={styles.pokeName}>{p.nome || p.apelido}</span>
+                    </div>
+                  ))
+              )}
             </div>
           </div>
         </div>
       )}
+
 
       {showPokemonCard && (
         <PokemonCard
@@ -323,6 +368,7 @@ export default function Pokedex() {
           pokemon={selectedPokemon}
           onLiberar={liberarPokemon}
           onClose={() => setSelectedPokemon(null)}
+          onRefresh={carregarDados}
         />
       )}
     </div>

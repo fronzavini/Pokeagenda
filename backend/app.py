@@ -162,6 +162,12 @@ def editar_pokemon(id):
     )
     return jsonify({"message": resultado})
 
+@app.route('/trocar_loca/<int:id>', methods=['PUT'])
+def trocar_loca(id):
+    resultado = Pokemon.trocar_loca(
+        id=id,
+    )
+    return jsonify({"message": resultado})
 
 # Deletar pokemon
 @app.route('/deletar_pokemon/<int:id>', methods=['DELETE'])
