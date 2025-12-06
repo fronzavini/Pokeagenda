@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `pokeagenda` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `pokeagenda`;
 -- MySQL dump 10.13  Distrib 8.0.44, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: pokeagenda
@@ -36,7 +34,7 @@ CREATE TABLE `pokemon` (
   PRIMARY KEY (`id`),
   KEY `id_treinador` (`id_treinador`),
   CONSTRAINT `pokemon_ibfk_1` FOREIGN KEY (`id_treinador`) REFERENCES `treinador` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +43,7 @@ CREATE TABLE `pokemon` (
 
 LOCK TABLES `pokemon` WRITE;
 /*!40000 ALTER TABLE `pokemon` DISABLE KEYS */;
-INSERT INTO `pokemon` VALUES (1,1,'Gold',302,1,1,'time','prankster'),(2,0,'as',4,1,1,'box','blaze'),(3,0,'golduck',55,0,1,'box','damp'),(4,0,'machadow',610,0,2,'time','rivalry'),(5,0,'excadrill',530,0,2,'box','sand-rush'),(7,0,'gloom',44,0,1,'time','chlorophyll'),(13,0,'sandslash',28,0,1,'box','sand-veil'),(14,0,'hypno',97,0,1,'box','insomnia'),(15,0,'farfetchd',83,0,1,'time','keen-eye'),(16,0,'growlithe',58,0,1,'box','intimidate'),(17,0,'aerodactyl',142,0,1,'box','rock-head'),(18,0,'urshifu-single-strike',892,0,1,'box','unseen-fist'),(19,0,'graveler',75,0,1,'box','rock-head'),(20,0,'abra',63,0,1,'box','synchronize'),(21,0,'golduck',55,0,1,'box','damp'),(22,0,'exeggcute',102,0,1,'box','chlorophyll'),(23,0,'alakazam',65,0,1,'box','synchronize'),(24,0,'beedrill',15,0,1,'box','swarm'),(25,0,'tauros',128,0,1,'box','intimidate'),(26,0,'blastoise',9,0,1,'box','torrent'),(27,0,'blastoise',9,0,1,'box','torrent'),(28,0,'exeggcute',102,0,1,'box','chlorophyll'),(29,0,'tentacruel',73,0,1,'box','clear-body'),(30,0,'squirtle',7,0,1,'box','torrent'),(31,0,'hypno',97,0,1,'box','insomnia'),(32,0,'yanma',193,0,1,'box','speed-boost');
+INSERT INTO `pokemon` VALUES (1,1,'Gold',302,1,1,'time','prankster'),(2,0,'as',4,1,1,'box','blaze'),(3,0,'golduck',55,0,1,'box','damp'),(4,0,'machadow',610,0,2,'time','rivalry'),(5,0,'excadrill',530,0,2,'box','sand-rush'),(13,0,'sandslash',28,0,1,'box','sand-veil'),(14,0,'hypno',97,0,1,'box','insomnia'),(15,0,'farfetchd',83,0,1,'time','keen-eye'),(16,0,'growlithe',58,0,1,'box','intimidate'),(17,0,'aerodactyl',142,0,1,'box','rock-head'),(18,0,'urshifu-single-strike',892,0,1,'box','unseen-fist'),(19,0,'graveler',75,0,1,'box','rock-head'),(20,0,'abra',63,0,1,'box','synchronize'),(21,0,'golduck',55,0,1,'box','damp'),(22,0,'exeggcute',102,0,1,'box','chlorophyll'),(23,0,'alakazam',65,0,1,'box','synchronize'),(24,0,'beedrill',15,0,1,'box','swarm'),(25,0,'tauros',128,0,1,'box','intimidate'),(26,0,'blastoise',9,0,1,'box','torrent'),(27,0,'blastoise',9,0,1,'box','torrent'),(28,0,'exeggcute',102,0,1,'box','chlorophyll'),(29,0,'tentacruel',73,0,1,'box','clear-body'),(30,0,'squirtle',7,0,1,'box','torrent'),(31,0,'hypno',97,0,1,'box','insomnia'),(32,0,'yanma',193,0,1,'box','speed-boost'),(33,1,'garde',282,1,1,'time','trace');
 /*!40000 ALTER TABLE `pokemon` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-04 23:42:19
+-- Dump completed on 2025-12-05 21:17:53

@@ -67,18 +67,23 @@ export default function Pokedex() {
     }
   }, [selectedTreinadorId]);
 
-  const salvarTreinador = (dados) => {
-    fetch(`http://localhost:5000/editar_treinador/${dados.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dados),
-    })
-      .then((res) => res.json())
-      .then(() => {
-        carregarTreinadores();
-        carregarDados(dados.id);
+  const salvarTreinador = async (dados) => {
+    try {
+      const res = await fetch(`http://localhost:5000/editar_treinador/${dados.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados),
       });
+
+      const data = await res.json();
+      return data; // <--- ESSENCIAL
+    } catch (error) {
+      return { erro: "Erro de conexão com o servidor: " + error.message };
+    }
   };
+
+
+
 
   const cadastrarNovoTreinador = (dados) => {
     fetch(`http://localhost:5000/criar_treinador`, {

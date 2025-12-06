@@ -45,16 +45,24 @@ def criar_treinador():
 @app.route('/editar_treinador/<int:id>', methods=['PUT'])
 def editar_treinador(id):
     dados = request.json or {}
-    resultado = Treinador.atualizar_treinador(
-        id=id,
-        nome=dados.get("nome"),
-        email=dados.get("email"),
-        cpf=dados.get("cpf"),
-        foto=dados.get("foto"),
-        cidade=dados.get("cidade")
-    )
-    return jsonify({"message": resultado})
 
+    try:
+        resultado = Treinador.atualizar_treinador(
+            id=id,
+            nome=dados.get("nome"),
+            email=dados.get("email"),
+            cpf=dados.get("cpf"),
+            foto=dados.get("foto"),
+            cidade=dados.get("cidade")
+        )
+
+        if resultado != "Treinador atualizado com sucesso":
+            return jsonify({"erro": resultado}), 400
+
+        return jsonify({"message": resultado}), 200
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
 
 # Deletar treinador
 @app.route('/deletar_treinador/<int:id>', methods=['DELETE'])

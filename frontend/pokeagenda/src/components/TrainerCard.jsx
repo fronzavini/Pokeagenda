@@ -31,7 +31,6 @@ export default function TrainerCard({
     } else if (trainerMode === "edit" && treinador) {
       setForm(initialForm);
     }
-    // eslint-disable-next-line
   }, [trainerMode, treinador]);
 
   const handleChange = (e) => {
@@ -39,13 +38,22 @@ export default function TrainerCard({
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!form.nome || !form.email || !form.cpf || !form.foto || !form.cidade) {
       alert("Preencha todos os campos obrigatórios!");
       return;
     }
-    salvar(form);
+
+    const resposta = await salvar(form);
+
+    if (resposta?.erro) {
+      alert("Erro ao salvar: " + resposta.erro);
+      return;
+    }
+
+    alert("Treinador atualizado com sucesso!");
     fechar();
   };
 
@@ -71,6 +79,7 @@ export default function TrainerCard({
             </button>
           </div>
         </div>
+
         <form onSubmit={handleSubmit} className={styles.formContent}>
           <div className={styles.trainerDesignColumn}>
             <h3 className={styles.sectionTitle}>Trainer Design</h3>
@@ -95,6 +104,7 @@ export default function TrainerCard({
               )}
             </div>
           </div>
+
           <div className={styles.infoColumn}>
             <h3 className={styles.sectionTitle}>Info</h3>
             <div className={styles.infoContent}>
@@ -109,6 +119,7 @@ export default function TrainerCard({
                   className={styles.inputField}
                 />
               </label>
+
               <label className={styles.infoRow}>
                 <span className={styles.label}>Email:</span>
                 <input
@@ -120,6 +131,7 @@ export default function TrainerCard({
                   className={styles.inputField}
                 />
               </label>
+
               <label className={styles.infoRow}>
                 <span className={styles.label}>CPF:</span>
                 <input
@@ -131,8 +143,9 @@ export default function TrainerCard({
                   className={styles.inputField}
                 />
               </label>
+
               <label className={styles.infoRow}>
-                <span className={styles.label}>Cidade (Hometown):</span>
+                <span className={styles.label}>Cidade:</span>
                 <input
                   type="text"
                   name="cidade"

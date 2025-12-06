@@ -1,6 +1,6 @@
 Para pegar os dados do dump no mysql workbench:
 
 Vá na aba server -> data import 
-dai onde pede Import from Dump Project Folder, coloque o local do arquivo Dump20251204
+dai onde pede Import from Dump Project Folder, coloque o local do arquivo Dump20251205
 depois disso pode clicar em Load Folder Contents e verifique se recebeu o banco de dados "pokeagenda"
-após isso pode clicar em Start Import
+após isso pode clicar em Start Import ou se der errado por ir copiando o código dos arquivos.
