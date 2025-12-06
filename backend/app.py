@@ -1,15 +1,24 @@
 # app.py
 # Rotas Flask corrigidas para trabalhar com as classes do arquivo classes.py
 # Use: python app.py
+
+# Importa Flask (framework), jsonify (para retornar JSON), e request (para ler dados que chegam por POST e PUT)
 from flask import Flask, jsonify, request
+
+# Libera a API para ser acessada de outros domínios (como o React)
 from flask_cors import CORS
+
+# Tratamento de erros relacionados ao MySQL
 from pymysql.err import MySQLError
 
-# Importa as classes (certifique-se de que classes.py esteja no mesmo diretório)
+# Importa as classes do backend que fazem todas as operações de banco
 from classes import Treinador, Tipo, Pokemon, TreinadorPokemon
 
+# Cria a aplicação Flask
 app = Flask(__name__)
-CORS(app)  # Permite requisições de qualquer origem (CORS liberado)
+
+# Ativa CORS (Cross-Origin Resource Sharing) para permitir requisições externas
+CORS(app)
 
 
 # =====================================================
@@ -17,6 +26,7 @@ CORS(app)  # Permite requisições de qualquer origem (CORS liberado)
 # =====================================================
 @app.route('/')
 def home():
+    # Retorna uma mensagem simples para testar se o servidor está rodando
     return jsonify({"message": "Bem-vindo à PokeAgenda API!"})
 
 
@@ -25,11 +35,12 @@ def home():
 # =====================================================
 
 # Criar treinador
-# exemplo curl:
-# curl -X POST http://127.0.0.1:5000/criar_treinador -H "Content-Type: application/json" -d '{"nome":"Ash","email":"ash@kanto","cpf":"12345678900","foto":"ash.jpg","cidade":"Pallet"}'
+# Recebe JSON com nome, email, cpf, foto e cidade
 @app.route('/criar_treinador', methods=['POST'])
 def criar_treinador():
-    dados = request.json or {}
+    dados = request.json or {}   # Lê o JSON enviado pelo frontend
+
+    # Chama o método da classe Treinador que insere no banco
     resultado = Treinador.criar_treinador(
         nome=dados.get("nome"),
         email=dados.get("email"),
@@ -40,13 +51,13 @@ def criar_treinador():
     return jsonify({"message": resultado})
 
 
-# Editar/atualizar treinador
-# curl -X PUT http://127.0.0.1:5000/editar_treinador/1 -H "Content-Type: application/json" -d '{"nome":"Ash Updated","cidade":"Viridian"}'
+# Edita um treinador existente pelo ID
 @app.route('/editar_treinador/<int:id>', methods=['PUT'])
 def editar_treinador(id):
     dados = request.json or {}
 
     try:
+        # Chama a função da classe que atualiza no banco
         resultado = Treinador.atualizar_treinador(
             id=id,
             nome=dados.get("nome"),
@@ -64,31 +75,32 @@ def editar_treinador(id):
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
-# Deletar treinador
+
+# Deletar treinador por ID
 @app.route('/deletar_treinador/<int:id>', methods=['DELETE'])
 def deletar_treinador(id):
     resultado = Treinador.deletar_treinador(id)
     return jsonify({"message": resultado})
 
-# Adicione logo abaixo da rota listar_treinadores
 
-# Listar treinador MAIN (retorna apenas o primeiro treinador, para compatibilidade com o frontend atual)
+# Retorna APENAS 1 treinador (compatibilidade com o frontend atual)
 @app.route('/listar_treinador', methods=['GET'])
 def listar_treinador():
     treinadores = Treinador.listar_treinadores()
     if treinadores:
-        return jsonify(treinadores[0])  # retorna só o primeiro como objeto para o frontend
+        return jsonify(treinadores[0])   # Retorna só o primeiro
     else:
-        return jsonify({})  # Objeto vazio se nenhum encontrado
+        return jsonify({})
 
-# Listar treinadores
+
+# Lista todos os treinadores cadastrados no banco
 @app.route('/listar_treinadores', methods=['GET'])
 def listar_treinadores():
     treinadores = Treinador.listar_treinadores()
     return jsonify(treinadores)
 
 
-# Obter treinador por id (útil)
+# Busca um treinador específico pelo ID
 @app.route('/treinador/<int:id>', methods=['GET'])
 def obter_treinador(id):
     treinador = Treinador.obter_por_id(id)
@@ -102,7 +114,7 @@ def obter_treinador(id):
 # ROTAS DE TIPO
 # =====================================================
 
-# Criar tipo
+# Cria novo tipo (ex: Fogo, Água, Planta)
 @app.route('/criar_tipo', methods=['POST'])
 def criar_tipo():
     dados = request.json or {}
@@ -110,7 +122,7 @@ def criar_tipo():
     return jsonify({"message": resultado})
 
 
-# Editar tipo
+# Edita um tipo existente
 @app.route('/editar_tipo/<int:id>', methods=['PUT'])
 def editar_tipo(id):
     dados = request.json or {}
@@ -118,14 +130,14 @@ def editar_tipo(id):
     return jsonify({"message": resultado})
 
 
-# Deletar tipo
+# Deleta tipo
 @app.route('/deletar_tipo/<int:id>', methods=['DELETE'])
 def deletar_tipo(id):
     resultado = Tipo.deletar_tipo(id)
     return jsonify({"message": resultado})
 
 
-# Listar tipos
+# Lista todos os tipos cadastrados
 @app.route('/listar_tipos', methods=['GET'])
 def listar_tipos():
     tipos = Tipo.listar_tipos()
@@ -136,25 +148,25 @@ def listar_tipos():
 # ROTAS DE POKEMON
 # =====================================================
 
-# Criar pokemon
-# Observação: a função interna espera (shiny, apelido, numero_pokedex, sombroso, id_treinador, loca, habilidade)
+# Cria um novo Pokémon
 @app.route('/criar_pokemon', methods=['POST'])
 def criar_pokemon():
     dados = request.json or {}
-    # Pegamos os campos que a classe espera.
+
+    # Chama a função da classe para criar no banco
     resultado = Pokemon.criar_pokemon(
         shiny=dados.get("shiny", False),
         apelido=dados.get("apelido"),
         numero_pokedex=dados.get("numero_pokedex"),
         sombroso=dados.get("sombroso", False),
         id_treinador=dados.get("id_treinador"),
-        loca=dados.get("loca"),  # 'time' ou 'box' — valide no front se quiser
+        loca=dados.get("loca"),
         habilidade=dados.get("habilidade")
     )
     return jsonify({"message": resultado})
 
 
-# Editar/atualizar pokemon
+# Atualiza pokemon existente
 @app.route('/editar_pokemon/<int:id>', methods=['PUT'])
 def editar_pokemon(id):
     dados = request.json or {}
@@ -170,35 +182,36 @@ def editar_pokemon(id):
     )
     return jsonify({"message": resultado})
 
+
+# Troca localização (time ⇄ box)
 @app.route('/trocar_loca/<int:id>', methods=['PUT'])
 def trocar_loca(id):
-    resultado = Pokemon.trocar_loca(
-        id=id,
-    )
+    resultado = Pokemon.trocar_loca(id)
     return jsonify({"message": resultado})
 
-# Deletar pokemon
+
+# Deleta pokemon
 @app.route('/deletar_pokemon/<int:id>', methods=['DELETE'])
 def deletar_pokemon(id):
     resultado = Pokemon.deletar_pokemon(id)
     return jsonify({"message": resultado})
 
 
-# Listar pokemons (todos)
+# Lista todos os pokemons do banco
 @app.route('/listar_pokemons', methods=['GET'])
 def listar_pokemons():
     pokemons = Pokemon.listar_pokemons()
     return jsonify(pokemons)
 
 
-# Listar pokemons por treinador
+# Lista pokemons de um treinador específico
 @app.route('/listar_pokemons_por_treinador/<int:treinador_id>', methods=['GET'])
 def listar_pokemons_por_treinador(treinador_id):
     pokemons = Pokemon.listar_pokemons_por_treinador(treinador_id)
     return jsonify(pokemons)
 
 
-# Obter pokemon por id
+# Busca pokemon por ID
 @app.route('/pokemon/<int:id>', methods=['GET'])
 def obter_pokemon(id):
     pokemon = Pokemon.obter_por_id(id)
@@ -209,10 +222,10 @@ def obter_pokemon(id):
 
 
 # =====================================================
-# ROTAS DE TREINADOR_POKEMON (ASSOCIAÇÃO)
+# ROTAS DE TREINADOR_POKEMON
 # =====================================================
 
-# Criar associação (atribuir um pokemon a um treinador/com localização 'time' ou 'box')
+# Cria associação Treinador ↔ Pokémon (com time/box)
 @app.route('/criar_treinador_pokemon', methods=['POST'])
 def criar_treinador_pokemon():
     dados = request.json or {}
@@ -224,22 +237,21 @@ def criar_treinador_pokemon():
     return jsonify({"message": resultado})
 
 
-# Remover associação — rota com dois parâmetros na URL
-# curl -X DELETE http://127.0.0.1:5000/remover_treinador_pokemon/1/2
+# Remove associação
 @app.route('/remover_treinador_pokemon/<int:treinador_id>/<int:pokemon_id>', methods=['DELETE'])
 def remover_treinador_pokemon(treinador_id, pokemon_id):
     resultado = TreinadorPokemon.deletar_treinador_pokemon(treinador_id, pokemon_id)
     return jsonify({"message": resultado})
 
 
-# Listar todas as associações
+# Lista todas as associações da tabela treinadores ↔ pokemons
 @app.route('/listar_treinador_pokemon', methods=['GET'])
 def listar_treinador_pokemon():
     associacoes = TreinadorPokemon.listar_treinador_pokemon()
     return jsonify(associacoes)
 
 
-# Listar pokemons do treinador (usando a tabela de associação)
+# Lista apenas os pokemons de um treinador, usando a tabela de vínculos
 @app.route('/listar_pokemons_do_treinador/<int:treinador_id>', methods=['GET'])
 def listar_pokemons_do_treinador(treinador_id):
     pokemons = TreinadorPokemon.listar_pokemons_do_treinador(treinador_id)
@@ -250,5 +262,7 @@ def listar_pokemons_do_treinador(treinador_id):
 # EXECUÇÃO DO APP
 # =====================================================
 if __name__ == "__main__":
-    # host 0.0.0.0 para acessar pela rede local, porta 5000
+    # Host 0.0.0.0 = permite acesso pela rede local
+    # Porta 5000 = padrão para APIs Flask
+    # debug=True = reinicia automaticamente ao salvar
     app.run(host="0.0.0.0", port=5000, debug=True)
