@@ -1,0 +1,86 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+}
+.highlight {
+  position: absolute;
+  border: 3px solid #ffd54f;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
+  border-radius: 8px;
+  pointer-events: none;
+  transition: all 0.15s ease;
+}
+.tooltip {
+  position: absolute;
+  background: #fffbe6;
+  color: #111;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+  z-index: 10000;
+}
+.tooltipContent {
+  font-size: 14px;
+  line-height: 1.3;
+}
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.ctrl {
+  background: #e0e0e0;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.ctrl:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.bottomBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+  z-index: 10001;
+}
+.closeBtn {
+  background: #ffcc66;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.centerBox {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  z-index: 10000;
+}
+.stepCounter {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+.bottomActions {
+  display: flex;
+  gap: 8px;
+}

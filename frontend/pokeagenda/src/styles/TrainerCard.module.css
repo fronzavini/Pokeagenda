@@ -1,0 +1,238 @@
+/* 1. IMPORTAÇÃO DA GOOGLE FONT PIXELIZADA */
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+/* ========================================================= */
+/* BASE E OVERLAY */
+/* ========================================================= */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.card {
+  width: 600px;
+  min-height: 500px;
+  background-color: #e6e6e6;
+  border: 4px solid #555;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  padding: 15px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 100;
+}
+
+/* ========================================================= */
+/* CABEÇALHO (LOGO E TÍTULO) */
+/* ========================================================= */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+}
+
+.pokemonLogo {
+  width: 170px;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+
+/* ========================================================= */
+/* CONTEÚDO PRINCIPAL (COLUNAS E TÍTULOS) */
+/* ========================================================= */
+.formContent {
+  display: flex;
+  gap: 15px;
+  flex-grow: 1;
+}
+
+.trainerDesignColumn,
+.infoColumn {
+  flex: 1;
+  border: 4px solid #777; /* Borda grossa */
+  background-color: #f8f8f8;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px; /* Borda da coluna arredondada */
+  overflow: hidden;
+  margin: 0;
+}
+
+/* Título da seção (Bloco Verde Centralizado) */
+.sectionTitle {
+  text-align: center;
+  background-color: #7a9c80; /* Cor do bloco de título */
+  color: white;
+  /* AQUI: Aplicação da Press Start 2P no título da seção */
+  font-family: "Press Start 2P", monospace;
+  font-weight: bold;
+  font-size: 16px;
+  /* Borda e Arredondamento do PRÓPRIO TÍTULO */
+  border: 2px solid #5d7a61;
+  border-radius: 8px;
+  padding: 8px 15px;
+  /* Centraliza o título e cria o respiro lateral/superior */
+  margin: -5px auto 10px auto;
+  width: calc(100% - 30px);
+  max-width: 250px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================================= */
+/* COLUNA DESIGN (FOTO) */
+/* ========================================================= */
+.designContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.photoLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.preview {
+  width: 90%;
+  /* Define a largura máxima absoluta da imagem */
+  max-width: 280px;
+  /* Define a altura máxima para evitar que imagens longas estiquem a coluna */
+  max-height: 295px; /* 🟢 NOVO: Altura máxima ajustada */
+
+  height: auto; /* Garante que a altura se ajuste para manter a proporção */
+
+  /* 🟢 IMPORTANTE: Controla como a imagem preenche o espaço */
+  object-fit: contain; /* Garante que a imagem inteira seja visível, sem ser cortada */
+
+  display: block;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+/* Input de URL da foto - alinhamento à esquerda */
+.trainerDesignColumn .inputField {
+  text-align: left;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+/* ========================================================= */
+/* COLUNA INFO (CAMPOS DE EDIÇÃO - VERTICAL) */
+/* ========================================================= */
+.infoContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.infoRow {
+  /* Layout vertical: label em cima, input embaixo */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 5px 0;
+  border-bottom: none; /* Linha pontilhada removida */
+  font-size: 14px;
+  min-height: auto;
+}
+
+.label {
+  font-weight: bold;
+  color: #555;
+  white-space: nowrap;
+  margin-right: 0;
+  margin-bottom: 2px; /* Espaço entre label e input */
+  flex-basis: auto;
+  /* Fonte pixelizada no rótulo */
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px; /* Tamanho ajustado para a fonte Press Start 2P */
+}
+
+.inputField {
+  flex-grow: 1;
+  /* Recuo: 95% da largura total, deixando 5% de espaço à direita */
+  width: 95%;
+  align-self: flex-start;
+
+  padding: 3px 5px;
+  border: none;
+  border-bottom: 1px solid #777; /* Linha discreta para o input */
+
+  background-color: transparent;
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+  font-family: inherit;
+}
+
+/* Efeito de foco para mostrar que o campo é editável */
+.inputField:focus {
+  outline: none;
+  border-bottom: 1px solid #3b4cca;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+/* ========================================================= */
+/* BOTÕES */
+/* ========================================================= */
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 13px;
+  margin-left: 120px;
+}
+
+.buttons button {
+  padding: 8px 15px;
+  border: 2px solid #555;
+  border-radius: 8px; /* Arredondamento para os botões */
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.cancel {
+  background-color: #ddd;
+  color: #555;
+}
+
+.cancel:hover {
+  background-color: #ccc;
+  border-color: #333;
+}
+
+.save {
+  background-color: #4caf50; /* Verde */
+  color: white;
+  border-color: #337a36;
+}
+
+.save:hover {
+  background-color: #45a049;
+  border-color: #2b612e;
+}
+
