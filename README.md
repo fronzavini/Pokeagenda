@@ -1,47 +1,65 @@
-Dupla: Manuela e Vinícius
-Turma: 301 info
+# 🗓️ PokeAgenda
 
+Sistema web inspirado no universo Pokémon que permite ao treinador consultar Pokémons, gerenciar seu time e editar seus dados pessoais, simulando uma PokéAgenda digital.
 
-Para executar o frontend:
- -possua o node, com npm e nvm funcionando
+---
 
- -entra no caminho: \Pokeagenda\frontend\pokeagenda>
- -execute: npm install
-           npm run dev
- -ele deve abrir:
-> pokeagenda@0.0.0 dev
-> vite
+## 🎯 Objetivo
 
+Criar um sistema web onde um treinador pode:
 
-  VITE v7.2.2  ready in 1524 ms
+- Consultar informações de Pokémons
+- Gerenciar seu time (até 6 Pokémons ativos)
+- Organizar Pokémons no box
+- Visualizar e editar seus dados pessoais
 
-  ➜  Local:   http://localhost:5173/
-  ➜  Network: use --host to expose
-  ➜  press h + enter to show help
+---
 
+## ✨ Funcionalidades
 
+### 👤 Perfil do Treinador
+- Visualizar nome, CPF, e-mail, foto e cidade
+- Visualizar os Pokémons do time
+- Editar dados pessoais
 
-Para executar o backend:
- -entre no caminho \Pokeagenda\backend
- -execute python -m flask run --debug
- -ele deve abrir:
- * Debug mode: on
- WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
- * Running on http://127.0.0.1:5000
-Press CTRL+C to quit
- * Restarting with stat
- * Debugger is active!
- * Debugger PIN: 530-846-774
+### 🔍 Consulta de Pokémons
+- Buscar Pokémon por nome ou número
+- Exibir:
+  - nome
+  - tipo(s)
+  - imagem
+  - altura
+  - peso
+  - habilidades
+- Exibir evolução (quando existir)
+- Consumo da API pública da **:contentReference[oaicite:0]{index=0}**
 
+### 🎒 Gerenciamento de Pokémons
+- Adicionar Pokémon ao time (máximo de 6)
+- Enviar automaticamente para o box quando o time estiver completo
+- Visualizar Pokémons do time e do box
+- Trocar Pokémon do time com um do box
+- Remover Pokémon do time ou do box
 
+---
 
+## 🧭 Tutorial no sistema
 
-para importar o banco de dados você depende do aplicativo que estiver usando.
-por exemplo o MySql Workbench:
- -Vá na aba server -> data import 
- -dai onde pede Import from Dump Project Folder, coloque o local do arquivo Dump20251205
- -depois disso pode clicar em Load Folder Contents e verifique se recebeu o banco de dados "pokeagenda"
- -após isso pode clicar em Start Import ou se der errado por ir copiando o código dos arquivos.
+O sistema possui um **tutorial interativo integrado à interface**, que orienta o usuário sobre como navegar pela PokeAgenda, consultar Pokémons, gerenciar o time, acessar o box e editar o perfil.
 
-Caso use outro aplicativo, siga os passos recomendados de importação dele
-se não funcionar tente abrir o arquivo Dump20251205 e copiar os comandos Sql descritos nele.
+---
+
+## 🛠️ Tecnologias
+
+- HTML
+- CSS
+- JavaScript
+- API REST (PokéAPI)
+
+---
+
+## 📌 Observações
+
+- O time do treinador é limitado a **6 Pokémons ativos**.
+- A interface é inspirada visualmente em uma PokéAgenda.
+- Projeto desenvolvido para fins educacionais.
